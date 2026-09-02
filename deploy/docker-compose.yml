@@ -1,0 +1,58 @@
+name: jbparser
+
+services:
+  valkey:
+    image: valkey/valkey:8-alpine
+    command: ["valkey-server", "--appendonly", "yes"]
+    volumes:
+      - valkey_data:/data
+    networks:
+      - internal
+    restart: unless-stopped
+    # No ports published: reachable only from the internal network.
+
+  backend:
+    build:
+      context: ../backend
+    environment:
+      VALKEY_URL: valkey://valkey:6379/0
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      REASON_MODEL: ${REASON_MODEL:-claude-opus-5}
+    depends_on:
+      - valkey
+    networks:
+      - internal
+    restart: unless-stopped
+    # No ports published: only nginx can reach it.
+
+  worker:
+    build:
+      context: ../backend
+    command: ["python", "-m", "sources.ingest"]
+    environment:
+      VALKEY_URL: valkey://valkey:6379/0
+      WORKER_ID: worker-1
+    depends_on:
+      - valkey
+    networks:
+      - internal
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: deploy/nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - internal
+    restart: unless-stopped
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  valkey_data:

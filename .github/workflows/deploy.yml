@@ -1,0 +1,96 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  DEPLOY_HOST: "62.171.154.9"
+  DEPLOY_PATH: /opt/jbparser/app
+
+jobs:
+  test_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install_valkey_compatible_server
+        run: sudo apt-get update && sudo apt-get install -y redis-server
+
+      - name: install_uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: run_tests
+        working-directory: backend
+        run: |
+          uv sync
+          uv run pytest
+
+  test_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: install_dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: build
+        working-directory: frontend
+        run: npm run build
+
+  deploy:
+    needs: [test_backend, test_frontend]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: production_deploy
+      cancel-in-progress: false
+    env:
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER || 'deploy' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: set_up_ssh
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          # A key ssh-keygen cannot derive a public key from would fail later
+          # with an opaque libcrypto error — reject it here with a clear cause.
+          if ! ssh-keygen -y -P "" -f ~/.ssh/id_ed25519 > /dev/null; then
+            echo "::error::DEPLOY_SSH_KEY is not a valid UNENCRYPTED private key." >&2
+            echo "Regenerate with: ssh-keygen -t ed25519 -f deploy_key -N \"\"" >&2
+            echo "and store the full deploy_key file (BEGIN/END lines included)." >&2
+            exit 1
+          fi
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: sync_sources_to_server
+        run: |
+          rsync -az --delete --exclude '.git' ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+
+      - name: build_and_restart_containers
+        run: |
+          # Keepalives stop NATs/firewalls from dropping the connection during
+          # long silent phases (exporting multi-GB image layers).
+          ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=60 "$DEPLOY_USER@$DEPLOY_HOST" "
+            set -e
+            cd '$DEPLOY_PATH/deploy'
+            docker compose --env-file /opt/jbparser/.env up -d --build --remove-orphans
+            docker image prune -f
+          "

@@ -1,0 +1,108 @@
+.Title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.Subtitle {
+  margin: 0 0 20px;
+  color: var(--Muted);
+  font-size: 13.5px;
+}
+
+.Card {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+  overflow-x: auto;
+  max-width: 980px;
+}
+
+.Table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+}
+
+.Table th {
+  color: var(--Muted);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--Border);
+}
+
+.Table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--Border);
+  vertical-align: middle;
+}
+
+.Table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.Table tbody tr:hover {
+  background: var(--Surface2);
+}
+
+.SourceKey {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+.StatusGood,
+.StatusBad {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+}
+
+.StatusGood {
+  color: var(--Good);
+}
+
+.StatusBad {
+  color: var(--Bad);
+}
+
+.StatusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ErrorText {
+  color: var(--Bad);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.Mono {
+  color: var(--Muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.Numeric {
+  text-align: right;
+}
+
+.CountCell {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12.5px;
+}
+
+.CountMuted {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12.5px;
+  color: var(--Muted);
+}

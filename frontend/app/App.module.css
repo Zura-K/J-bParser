@@ -1,0 +1,104 @@
+.Shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.Header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 10px 24px;
+  background: var(--Surface);
+  border-bottom: 1px solid var(--Border);
+}
+
+.Brand {
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.BrandDot {
+  color: var(--Accent);
+}
+
+.Nav {
+  display: flex;
+  gap: 4px;
+}
+
+.NavButton,
+.NavActive {
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--Muted);
+  font-size: 13.5px;
+  font-weight: 400;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+.NavButton:hover {
+  color: var(--Text);
+}
+
+.NavActive {
+  background: var(--Surface2);
+  color: var(--Text);
+  font-weight: 600;
+}
+
+.HeaderRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ThemeButton {
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Muted);
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.ThemeButton:hover {
+  color: var(--Text);
+  border-color: var(--Muted);
+}
+
+.AccountButton,
+.AccountActive {
+  background: none;
+  border: none;
+  color: var(--Muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 4px;
+}
+
+.AccountButton:hover {
+  color: var(--Text);
+}
+
+.AccountActive {
+  color: var(--Accent);
+}
+
+.Main {
+  flex: 1;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 24px;
+  box-sizing: border-box;
+}

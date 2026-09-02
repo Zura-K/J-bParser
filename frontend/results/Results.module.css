@@ -1,0 +1,153 @@
+.Bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.Title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.Count {
+  color: var(--Muted);
+  font-size: 13px;
+}
+
+.ProfilePicker {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--Muted);
+  font-size: 13px;
+}
+
+.Select {
+  background: var(--Surface);
+  color: var(--Text);
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  font-size: 13.5px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+.Card {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+  overflow-x: auto;
+}
+
+.Table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+}
+
+.Table th {
+  color: var(--Muted);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--Border);
+}
+
+.Table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--Border);
+  vertical-align: top;
+}
+
+.Table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.Table tbody tr:hover {
+  background: var(--Surface2);
+}
+
+.Score {
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--Accent);
+  background: var(--AccentSoft);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.Link {
+  color: var(--Text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.Link:hover {
+  color: var(--Accent);
+  text-decoration: none;
+}
+
+.Company {
+  color: var(--Muted);
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+
+.Muted {
+  color: var(--Muted);
+  font-size: 13px;
+}
+
+.Mono {
+  color: var(--Muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.Reason {
+  color: var(--Muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.DismissCell {
+  padding: 10px;
+}
+
+.DismissButton {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--Muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 8px;
+  line-height: 1.4;
+}
+
+.DismissButton:hover {
+  color: var(--Bad);
+  background: var(--Surface2);
+}
+
+.Empty {
+  color: var(--Muted);
+  font-size: 13.5px;
+}
+
+.Error {
+  color: var(--Bad);
+  font-size: 13px;
+}

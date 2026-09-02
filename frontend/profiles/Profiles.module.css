@@ -1,0 +1,163 @@
+.Title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.Subtitle {
+  margin: 0 0 20px;
+  color: var(--Muted);
+  font-size: 13.5px;
+}
+
+.Split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  align-items: start;
+  max-width: 980px;
+}
+
+.List {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.Row {
+  display: flex;
+  align-items: center;
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 10px;
+  box-shadow: var(--Shadow);
+}
+
+.RowMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 14px;
+  padding: 12px 14px;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 10px;
+}
+
+.RowMain:hover {
+  background: var(--Surface2);
+}
+
+.RowTitle {
+  font-weight: 600;
+}
+
+.RowSub {
+  color: var(--Muted);
+  font-size: 12.5px;
+}
+
+.Delete {
+  background: none;
+  border: none;
+  color: var(--Muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 10px 14px;
+}
+
+.Delete:hover {
+  color: var(--Bad);
+}
+
+.NewButton {
+  background: none;
+  border: 1px dashed var(--Border);
+  border-radius: 10px;
+  color: var(--Muted);
+  font-size: 13.5px;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.NewButton:hover {
+  color: var(--Accent);
+  border-color: var(--Accent);
+}
+
+.Editor {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.EditorTitle {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.Field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--Muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.Input,
+.TextArea {
+  background: var(--Bg);
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Text);
+  font-size: 13.5px;
+  padding: 8px 10px;
+}
+
+.TextArea {
+  resize: vertical;
+}
+
+.Input:focus,
+.TextArea:focus {
+  outline: 2px solid var(--Accent);
+  outline-offset: -1px;
+}
+
+.SaveButton {
+  align-self: flex-start;
+  background: var(--Accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--AccentInk);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 9px 20px;
+  cursor: pointer;
+}
+
+.SaveButton:hover {
+  filter: brightness(1.08);
+}
+
+.SaveButton:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.Error {
+  color: var(--Bad);
+  font-size: 12.5px;
+}

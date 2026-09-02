@@ -1,0 +1,61 @@
+:root {
+  --Bg: #111114;
+  --Surface: #18181c;
+  --Surface2: #1f1f24;
+  --Border: #2a2a31;
+  --Text: #eae8e3;
+  --Muted: #9b968c;
+  --Accent: #e6a13c;
+  --AccentInk: #1c1204;
+  --AccentSoft: rgba(230, 161, 60, 0.13);
+  --Good: #6dbd8a;
+  --Bad: #e0695c;
+  --Shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --Bg: #faf9f6;
+  --Surface: #ffffff;
+  --Surface2: #f2f0ea;
+  --Border: #e5e2d9;
+  --Text: #211e18;
+  --Muted: #726c60;
+  --Accent: #a96a10;
+  --AccentInk: #ffffff;
+  --AccentSoft: rgba(169, 106, 16, 0.1);
+  --Good: #2e7d4f;
+  --Bad: #bf3f2e;
+  --Shadow: 0 1px 3px rgba(30, 25, 10, 0.08);
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: var(--Bg);
+  color: var(--Text);
+  font-family: "Sora", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: background 0.2s, color 0.2s;
+}
+
+a {
+  color: var(--Accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--AccentSoft);
+}

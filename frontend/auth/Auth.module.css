@@ -1,0 +1,101 @@
+.Center {
+  display: flex;
+  justify-content: center;
+  padding-top: 32px;
+}
+
+.Panel {
+  width: 100%;
+  max-width: 380px;
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 14px;
+  box-shadow: var(--Shadow);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.Title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.Note {
+  margin: 0;
+  color: var(--Muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.Accent {
+  color: var(--Accent);
+}
+
+.Field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--Muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.Input {
+  background: var(--Bg);
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Text);
+  font-size: 14px;
+  padding: 10px 12px;
+}
+
+.Input:focus {
+  outline: 2px solid var(--Accent);
+  outline-offset: -1px;
+}
+
+.Buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.PrimaryButton {
+  background: var(--Accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--AccentInk);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px;
+  cursor: pointer;
+}
+
+.PrimaryButton:hover {
+  filter: brightness(1.08);
+}
+
+.SecondaryButton {
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Text);
+  font-size: 14px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.SecondaryButton:hover {
+  border-color: var(--Muted);
+}
+
+.Error {
+  color: var(--Bad);
+  font-size: 12.5px;
+}

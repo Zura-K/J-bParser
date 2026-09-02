@@ -1,0 +1,7 @@
+# Context for deploy/nginx/Dockerfile — only the frontend sources and
+# the nginx config are needed; keep everything else out of the build.
+*
+!frontend/
+!deploy/nginx/
+frontend/node_modules/
+frontend/dist/
