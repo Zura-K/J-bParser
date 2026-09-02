@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel
 
 from auth.identity import anon_id_pattern, open_session, resolve_user_id
-from library import store
+from library import limits, store
 
 router = APIRouter()
 hasher = PasswordHasher()
@@ -67,4 +67,9 @@ def logout(authorization: str | None = Header(default=None)) -> dict:
 @router.get("/api/me")
 def me(user_id: str = Depends(resolve_user_id)) -> dict:
     user = store.load_user(user_id) or {}
-    return {"tier": user.get("tier", "Anonymous"), "email": user.get("email")}
+    tier = user.get("tier", "Anonymous")
+    return {
+        "tier": tier,
+        "email": user.get("email"),
+        "max_profiles": limits.limits_for(tier).max_profiles,
+    }

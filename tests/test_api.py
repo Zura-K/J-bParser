@@ -110,6 +110,7 @@ def test_register_claims_anonymous_state():
     assert client.get("/api/me", headers=auth).json() == {
         "tier": "Free",
         "email": "a@b.c",
+        "max_profiles": 3,
     }
     profiles = client.get("/api/profiles", headers=auth).json()["profiles"]
     assert profile_id in profiles

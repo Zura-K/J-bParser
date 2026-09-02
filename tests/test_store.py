@@ -133,10 +133,13 @@ def test_merge_user_repoints_state():
     assert store.client.ttl("Dismissed:acct") == -1
 
 
-def test_count_embed_increments_daily():
-    assert store.count_embed("u1") == 1
-    assert store.count_embed("u1") == 2
-    assert store.count_embed("u2") == 1
+def test_embed_count_increments_daily():
+    assert store.embed_count("u1") == 0
+    store.bump_embed_count("u1")
+    assert store.embed_count("u1") == 1
+    store.bump_embed_count("u1")
+    assert store.embed_count("u1") == 2
+    assert store.embed_count("u2") == 0
     assert store.client.ttl("EmbedCount:u1") > 0
 
 

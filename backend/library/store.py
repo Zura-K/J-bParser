@@ -192,12 +192,15 @@ def merge_user(source_user_id: str, target_user_id: str) -> None:
     client.delete(keys.user(source_user_id))
 
 
-def count_embed(user_id: str) -> int:
+def embed_count(user_id: str) -> int:
+    raw = client.get(keys.embed_count(user_id))
+    return 0 if raw is None else int(raw)
+
+
+def bump_embed_count(user_id: str) -> None:
     key = keys.embed_count(user_id)
-    count = client.incr(key)
-    if count == 1:
+    if client.incr(key) == 1:
         client.expire(key, 86400)
-    return count
 
 
 def _write_with_ttl(pipe, key: str, ttl_seconds: int | None) -> None:

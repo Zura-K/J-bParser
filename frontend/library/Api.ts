@@ -54,7 +54,17 @@ export async function ApiFetch<T>(
     body: Body === undefined ? undefined : JSON.stringify(Body),
   })
   if (!Reply.ok) {
-    throw new Error(await Reply.text())
+    const RawBody = await Reply.text()
+    let Detail = RawBody
+    try {
+      const Parsed = JSON.parse(RawBody) as { detail?: unknown }
+      if (typeof Parsed.detail === "string") {
+        Detail = Parsed.detail
+      }
+    } catch {
+      Detail = RawBody
+    }
+    throw new Error(Detail || Reply.statusText)
   }
   return Reply.json() as Promise<T>
 }
@@ -95,4 +105,5 @@ export type SourceRow = {
 export type MeResponse = {
   tier: string
   email: string | null
+  max_profiles: number
 }

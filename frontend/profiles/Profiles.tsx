@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { ApiFetch, type ProfileFields } from "../library/Api"
+import { ApiFetch, type MeResponse, type ProfileFields } from "../library/Api"
 import Styles from "./Profiles.module.css"
 
 const EmptyProfile: ProfileFields = {
@@ -29,6 +29,10 @@ export function Profiles() {
     queryKey: ["profiles"],
     queryFn: () => ApiFetch<{ profiles: Record<string, ProfileFields> }>("/api/profiles"),
   })
+  const Me = useQuery({
+    queryKey: ["me"],
+    queryFn: () => ApiFetch<MeResponse>("/api/me"),
+  })
   const Reset = () => {
     SetEditingId(null)
     SetDraft(EmptyProfile)
@@ -37,19 +41,29 @@ export function Profiles() {
   const Save = useMutation({
     mutationFn: () =>
       EditingId === null
-        ? ApiFetch("/api/profiles", "POST", Draft)
-        : ApiFetch(`/api/profiles/${EditingId}`, "PUT", Draft),
-    onSuccess: () => {
+        ? ApiFetch<{ profile_id: string }>("/api/profiles", "POST", Draft)
+        : ApiFetch<{ profile_id: string }>(`/api/profiles/${EditingId}`, "PUT", Draft),
+    onSuccess: (Reply) => {
       Cache.invalidateQueries()
-      Reset()
+      SetEditingId(Reply.profile_id)
+      SetFormError("")
     },
-    onError: (Caught) => SetFormError(String(Caught)),
+    onError: (Caught) =>
+      SetFormError(Caught instanceof Error ? Caught.message : String(Caught)),
   })
   const Remove = useMutation({
-    mutationFn: (ProfileId: string) => ApiFetch(`/api/profiles/${ProfileId}`, "DELETE"),
-    onSuccess: () => Cache.invalidateQueries(),
+    mutationFn: (ProfileId: string) =>
+      ApiFetch(`/api/profiles/${ProfileId}`, "DELETE").then(() => ProfileId),
+    onSuccess: (ProfileId) => {
+      Cache.invalidateQueries()
+      if (ProfileId === EditingId) {
+        Reset()
+      }
+    },
   })
   const Rows = Object.entries(ProfilesQuery.data?.profiles ?? {})
+  const MaxProfiles = Me.data?.max_profiles
+  const AtProfileLimit = MaxProfiles !== undefined && Rows.length >= MaxProfiles
   return (
     <div>
       <h1 className={Styles.Title}>Search profiles</h1>
@@ -59,15 +73,26 @@ export function Profiles() {
       <div className={Styles.Split}>
         <div className={Styles.List}>
           {Rows.map(([ProfileId, Fields]) => (
-            <div key={ProfileId} className={Styles.Row}>
+            <div
+              key={ProfileId}
+              className={
+                ProfileId === EditingId ? `${Styles.Row} ${Styles.RowEditing}` : Styles.Row
+              }
+            >
               <button
                 className={Styles.RowMain}
                 onClick={() => {
                   SetEditingId(ProfileId)
                   SetDraft({ ...EmptyProfile, ...Fields })
+                  SetFormError("")
                 }}
               >
-                <span className={Styles.RowTitle}>{Fields.keywords || ProfileId}</span>
+                <span className={Styles.RowTitle}>
+                  {Fields.keywords || ProfileId}
+                  {ProfileId === EditingId && (
+                    <span className={Styles.EditingBadge}>editing</span>
+                  )}
+                </span>
                 <span className={Styles.RowSub}>{Fields.locations || "anywhere"}</span>
               </button>
               <button
@@ -79,8 +104,20 @@ export function Profiles() {
               </button>
             </div>
           ))}
-          <button className={Styles.NewButton} onClick={Reset}>
-            + New profile
+          <button
+            className={Styles.NewButton}
+            onClick={Reset}
+            disabled={AtProfileLimit}
+            title={
+              AtProfileLimit
+                ? `Your tier allows at most ${MaxProfiles} profile${MaxProfiles === 1 ? "" : "s"}`
+                : undefined
+            }
+          >
+            {AtProfileLimit
+              ? `Profile limit reached (${MaxProfiles} on your tier)`
+              : "+ New profile"}
+          </button>
           </button>
         </div>
         <form

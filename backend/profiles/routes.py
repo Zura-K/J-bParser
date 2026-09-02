@@ -22,9 +22,17 @@ def write_profile(user_id: str, profile_id: str, payload: ProfilePayload) -> dic
     quotas = quotas_for_user(user_id)
     fields = payload.model_dump()
     if payload.description.strip():
-        if store.count_embed(user_id) > quotas.profile_embeds_per_day:
-            raise HTTPException(status_code=429, detail="embedding limit reached")
-        fields["vector"] = ranking.embed_text(payload.description)
+        stored = store.load_profile(user_id, profile_id)
+        needs_embed = (
+            stored is None
+            or stored.get("description") != payload.description
+            or "vector" not in stored
+        )
+        if needs_embed:
+            if store.embed_count(user_id) >= quotas.profile_embeds_per_day:
+                raise HTTPException(status_code=429, detail="embedding limit reached")
+            fields["vector"] = ranking.embed_text(payload.description)
+            store.bump_embed_count(user_id)
     store.save_profile(user_id, profile_id, fields, quotas.record_ttl_seconds)
     return {"profile_id": profile_id}
 
