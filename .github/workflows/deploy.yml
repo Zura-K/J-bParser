@@ -91,6 +91,6 @@ jobs:
           ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=60 "$DEPLOY_USER@$DEPLOY_HOST" "
             set -e
             cd '$DEPLOY_PATH/deploy'
-            docker compose --env-file /opt/jbparser/.env up -d --build --remove-orphans
+            docker compose --env-file /opt/jbparser/.env up -d --build --force-recreate --remove-orphans
             docker image prune -f
           "
