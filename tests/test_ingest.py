@@ -4,6 +4,7 @@ import time
 import pytest
 
 from library import ranking, store
+from library.valkey import x_valkey
 from sources import clean, extract, handlers, ingest, reparse
 
 
@@ -54,8 +55,8 @@ def test_dedupe_skips_second_run(fake_source):
 def test_reparse_uses_stored_raw_only(fake_source, monkeypatch):
     ingest.run_source(fake_source)
     for candidate in store.find_candidates(posted_before=2**33):
-        store.client.delete(f"Listing:{candidate['listing_id']}")
-    store.client.delete("Listings")
+        x_valkey.delete(f"Listing:{candidate['listing_id']}")
+    x_valkey.delete("Listings")
 
     def no_network(config):
         raise AssertionError("reparse must not fetch")
@@ -97,7 +98,7 @@ def test_update_in_place_keeps_ingested_at(fake_source):
 def test_expired_listing_can_be_reingested(fake_source):
     assert ingest.store_parsed("fake:test", [fake_listing()]) == (1, 0)
     listing_id = store.find_candidates(posted_before=2**33)[0]["listing_id"]
-    store.client.delete(f"Listing:{listing_id}")
+    x_valkey.delete(f"Listing:{listing_id}")
     assert ingest.store_parsed("fake:test", [fake_listing()]) == (1, 0)
     assert store.load_listing(listing_id)["title"] == "Fake Engineer"
 
