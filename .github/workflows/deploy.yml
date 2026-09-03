@@ -3,6 +3,7 @@ name: deploy
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 env:
@@ -28,7 +29,13 @@ jobs:
         working-directory: backend
         run: |
           uv sync
-          uv run pytest
+          uv run pytest --cov=. --cov-report=xml
+
+      - name: upload_backend_coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend_coverage
+          path: backend/coverage.xml
 
   test_frontend:
     runs-on: ubuntu-latest
@@ -49,9 +56,45 @@ jobs:
         working-directory: frontend
         run: npm run lint
 
+      - name: test
+        working-directory: frontend
+        run: npm test
+
+      - name: upload_frontend_coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend_coverage
+          path: frontend/coverage/lcov.info
+
       - name: build
         working-directory: frontend
         run: npm run build
+
+  sonar:
+    needs: [test_backend, test_frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: download_backend_coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: backend_coverage
+          path: backend
+
+      - name: download_frontend_coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend_coverage
+          path: frontend/coverage
+
+      - name: analyze
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   deploy:
     needs: [test_backend, test_frontend]

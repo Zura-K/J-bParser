@@ -28,7 +28,7 @@ services:
   worker:
     build:
       context: ../backend
-    command: ["python", "-m", "sources.ingest"]
+    command: ["python", "-m", "components.sources.ingest"]
     environment:
       VALKEY_URL: valkey://valkey:6379/0
       WORKER_ID: worker-1

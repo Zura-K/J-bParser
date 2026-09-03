@@ -4,12 +4,12 @@ import subprocess
 import time
 
 import pytest
-import valkey
 
 test_port = "6391"
 os.environ["VALKEY_URL"] = f"valkey://localhost:{test_port}/0"
+os.environ["VALKEY_NAMESPACE"] = "test"
 
-from library import store
+from library.valkey import xvalkey
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -24,9 +24,9 @@ def valkey_server():
     )
     for _ in range(50):
         try:
-            store.client.ping()
+            xvalkey.ping()
             break
-        except valkey.exceptions.ConnectionError:
+        except Exception:
             time.sleep(0.1)
     yield
     process.terminate()
@@ -35,4 +35,5 @@ def valkey_server():
 
 @pytest.fixture(autouse=True)
 def flush_valkey(valkey_server):
-    store.client.flushall()
+    xvalkey.flushall()
+    xvalkey.clear_memo()

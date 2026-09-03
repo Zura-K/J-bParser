@@ -4,7 +4,8 @@ import time
 import pytest
 
 from library import ranking, store
-from sources import clean, extract, handlers, ingest, reparse
+from library.valkey import xvalkey
+from components.sources import clean, extract, handlers, ingest, reparse
 
 
 @pytest.fixture(autouse=True)
@@ -54,8 +55,8 @@ def test_dedupe_skips_second_run(fake_source):
 def test_reparse_uses_stored_raw_only(fake_source, monkeypatch):
     ingest.run_source(fake_source)
     for candidate in store.find_candidates(posted_before=2**33):
-        store.client.delete(f"Listing:{candidate['listing_id']}")
-    store.client.delete("Listings")
+        xvalkey.delete(f"Listing:{candidate['listing_id']}")
+    xvalkey.delete("Listings")
 
     def no_network(config):
         raise AssertionError("reparse must not fetch")
@@ -97,7 +98,7 @@ def test_update_in_place_keeps_ingested_at(fake_source):
 def test_expired_listing_can_be_reingested(fake_source):
     assert ingest.store_parsed("fake:test", [fake_listing()]) == (1, 0)
     listing_id = store.find_candidates(posted_before=2**33)[0]["listing_id"]
-    store.client.delete(f"Listing:{listing_id}")
+    xvalkey.delete(f"Listing:{listing_id}")
     assert ingest.store_parsed("fake:test", [fake_listing()]) == (1, 0)
     assert store.load_listing(listing_id)["title"] == "Fake Engineer"
 
@@ -216,7 +217,7 @@ def test_ats_parsers():
 
 
 def test_linkedin_parse_joins_cards_and_details():
-    from sources.handlers import linkedin
+    from components.sources.handlers import linkedin
 
     search_html = b"""
     <ul>
@@ -245,7 +246,7 @@ def test_linkedin_parse_joins_cards_and_details():
 
 
 def test_linkedin_paginates_until_no_new_ids(monkeypatch):
-    from sources.handlers import linkedin
+    from components.sources.handlers import linkedin
 
     search_html = b"""
     <div class="base-card" data-entity-urn="urn:li:jobPosting:1234567890">
@@ -277,7 +278,7 @@ def test_linkedin_paginates_until_no_new_ids(monkeypatch):
 def test_linkedin_999_raises_soft_block(monkeypatch):
     import httpx
 
-    from sources.handlers import linkedin
+    from components.sources.handlers import linkedin
 
     handler = linkedin.LinkedinHandler()
     handler.min_request_gap_seconds = 0.0
