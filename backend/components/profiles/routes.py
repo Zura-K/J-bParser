@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from components.auth.identity import quotas_for_user, resolve_user_id
-from components.library import ranking, store
+from library import ranking, store
 
 router = APIRouter()
 

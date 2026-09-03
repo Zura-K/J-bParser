@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { createElement, useState } from "react"
-import { ApiFetch, type MeResponse } from "../components/library/ts/Api"
-import { UseTheme, type ThemeName } from "../components/library/ts/Theme"
+import { ApiFetch, type MeResponse } from "../library/ts/Api"
+import { UseTheme, type ThemeName } from "../library/ts/Theme"
 import { AppTemplate } from "./AppTemplate"
 
 export type Tab = "results" | "profiles" | "sources" | "account"

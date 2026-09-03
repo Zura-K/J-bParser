@@ -1,7 +1,7 @@
 import pytest
 
-from components.library import dedupe, ranking
-from components.library.limits import limits_for
+from library import dedupe, ranking
+from library.limits import limits_for
 
 
 def test_score_candidates_sorts_by_similarity():

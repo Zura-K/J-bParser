@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createElement, useState } from "react"
-import { ApiFetch, type ProfileFields, type SearchResult } from "../library/ts/Api"
+import { ApiFetch, type ProfileFields, type SearchResult } from "../../library/ts/Api"
 import { ResultsTemplate } from "./ResultsTemplate"
 
 export type ResultsState = {

@@ -3,7 +3,7 @@ import os
 from fastapi import APIRouter, Depends, HTTPException
 
 from components.auth.identity import resolve_user_id
-from components.library import store
+from library import store
 from components.sources import ingest
 from components.sources.catalog import sources
 

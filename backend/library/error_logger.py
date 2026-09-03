@@ -2,8 +2,8 @@ import inspect
 import os
 import traceback
 
-from components.library import sentry as sentry_module
-from components.library.sentry import XSentry
+from library import sentry as sentry_module
+from library.sentry import XSentry
 
 _internal_files = {
     os.path.abspath(__file__),

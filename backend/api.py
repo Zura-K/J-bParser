@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from components.library import env
-from components.library.sentry import XSentry
+from library import env
+from library.sentry import XSentry
 
 XSentry.init("api")
 

@@ -2,7 +2,7 @@ import functools
 import os
 import re
 
-from components.library import env
+from library import env
 
 try:
     import sentry_sdk

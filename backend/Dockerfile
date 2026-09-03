@@ -22,6 +22,7 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 
 COPY api.py ./
 COPY components ./components
+COPY library ./library
 
 RUN useradd --create-home app
 USER app

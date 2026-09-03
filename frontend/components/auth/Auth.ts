@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createElement, useState } from "react"
-import { ApiFetch, SetSessionToken, type MeResponse } from "../library/ts/Api"
+import { ApiFetch, SetSessionToken, type MeResponse } from "../../library/ts/Api"
 import { AuthTemplate } from "./AuthTemplate"
 
 export type AuthState = {

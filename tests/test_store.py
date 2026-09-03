@@ -2,8 +2,8 @@ import time
 
 import pytest
 
-from components.library import store
-from components.library.valkey import xvalkey
+from library import store
+from library.valkey import xvalkey
 
 
 def make_listing(**overrides):

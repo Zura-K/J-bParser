@@ -1,5 +1,5 @@
 import { createElement } from "react"
-import { type ThemeName } from "../library/ts/Theme"
+import { type ThemeName } from "../../library/ts/Theme"
 import { LandingTemplate } from "./LandingTemplate"
 
 export type LandingProps = {

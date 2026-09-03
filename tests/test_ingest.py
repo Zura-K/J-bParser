@@ -3,8 +3,8 @@ import time
 
 import pytest
 
-from components.library import ranking, store
-from components.library.valkey import xvalkey
+from library import ranking, store
+from library.valkey import xvalkey
 from components.sources import clean, extract, handlers, ingest, reparse
 
 

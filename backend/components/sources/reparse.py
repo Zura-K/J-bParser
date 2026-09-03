@@ -1,7 +1,7 @@
 import json
 import sys
 
-from components.library import store
+from library import store
 from components.sources import handlers, ingest
 
 
