@@ -3,7 +3,8 @@ import json
 import os
 import time
 
-from library import dedupe, env, ranking, store
+from library import dedupe, env, error_logger, ranking, store
+from library.sentry import XSentry
 from library.valkey import xvalkey
 from sources import clean, extract, handlers
 from sources.catalog import sources
@@ -141,9 +142,16 @@ def record_failure(config: dict, error: Exception) -> None:
             "next_run_at": time.time() + backoff,
         },
     )
+    error_logger.LogError(
+        error,
+        f"source {config['key']} ingest failed",
+        Tags={"source": config["key"]},
+        Fingerprint=["source-failure", config["key"]],
+    )
 
 
 def main() -> None:
+    XSentry.init("ingest")
     ranking.load_model()
     worker_id = os.environ.get("WORKER_ID", "worker-1")
     store.requeue_processing(worker_id)
@@ -154,6 +162,7 @@ def main() -> None:
             continue
         config = find_source(source_key)
         if config is not None:
+            XSentry.set_tag("source", source_key)
             try:
                 run_source(config)
             except Exception as error:

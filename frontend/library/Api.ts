@@ -1,3 +1,5 @@
+import { ReportApiException, ReportFailedApiCall } from "./Sentry"
+
 const AnonKey = "jobsearch_anon_id"
 const TokenKey = "jobsearch_token"
 
@@ -48,11 +50,17 @@ export async function ApiFetch<T>(
   if (Session) {
     HeaderMap["authorization"] = `Bearer ${Session}`
   }
-  const Reply = await fetch(Path, {
-    method: Method,
-    headers: HeaderMap,
-    body: Body === undefined ? undefined : JSON.stringify(Body),
-  })
+  let Reply: Response
+  try {
+    Reply = await fetch(Path, {
+      method: Method,
+      headers: HeaderMap,
+      body: Body === undefined ? undefined : JSON.stringify(Body),
+    })
+  } catch (Error) {
+    ReportApiException(Method, Path, Error)
+    throw Error
+  }
   if (!Reply.ok) {
     const RawBody = await Reply.text()
     let Detail = RawBody
@@ -64,6 +72,7 @@ export async function ApiFetch<T>(
     } catch {
       Detail = RawBody
     }
+    ReportFailedApiCall(Method, Path, Reply.status, Detail)
     throw new Error(Detail || Reply.statusText)
   }
   return Reply.json() as Promise<T>

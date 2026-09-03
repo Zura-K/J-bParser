@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 
 from library import env
+from library.sentry import XSentry
+
+XSentry.init("api")
+
 from auth import routes as auth_routes
 from profiles import routes as profile_routes
 from results import routes as result_routes

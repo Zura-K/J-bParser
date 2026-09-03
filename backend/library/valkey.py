@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import logging
 import os
 import struct
 import time
@@ -9,9 +8,7 @@ from collections.abc import Callable, Iterable
 
 import valkey
 
-from library import env
-
-logger = logging.getLogger("xvalkey")
+from library import env, error_logger
 
 connection_retry_attempts = 3
 retry_base_delay_seconds = 0.2
@@ -227,14 +224,14 @@ class XValkey:
             except (valkey.exceptions.ConnectionError, valkey.exceptions.TimeoutError):
                 if attempt == connection_retry_attempts - 1:
                     raise
-                logger.warning("connection error, retrying in %.1fs", delay)
+                error_logger.LogWarning(f"valkey connection error, retrying in {delay:.1f}s")
                 time.sleep(delay)
                 delay *= 2
 
     def _record(self, label: str, seconds: float) -> None:
         if self._trace:
             self._trace_log.append((label, seconds))
-            logger.debug("%s took %.4fs", label, seconds)
+            error_logger.LogDebug(f"valkey {label} took {seconds:.4f}s")
 
     def _run_command(self, command: str, *args, transform=None, **kwargs):
         method = getattr(self._client, command)
