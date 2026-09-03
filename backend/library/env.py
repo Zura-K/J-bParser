@@ -67,3 +67,6 @@ def load_project_env():
             load_dotenv(env_path)
         else:
             _parse_env_file(env_path)
+
+
+load_project_env()

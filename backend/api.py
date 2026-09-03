@@ -1,9 +1,6 @@
-from library.env import load_project_env
-
-load_project_env()
-
 from fastapi import FastAPI
 
+from library import env
 from auth import routes as auth_routes
 from profiles import routes as profile_routes
 from results import routes as result_routes
