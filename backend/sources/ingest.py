@@ -3,6 +3,10 @@ import json
 import os
 import time
 
+from library.env import load_project_env
+
+load_project_env()
+
 from library import dedupe, ranking, store
 from library.valkey import xvalkey
 from sources import clean, extract, handlers

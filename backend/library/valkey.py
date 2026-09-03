@@ -9,6 +9,8 @@ from collections.abc import Callable, Iterable
 
 import valkey
 
+from library.env import load_project_env
+
 logger = logging.getLogger("xvalkey")
 
 connection_retry_attempts = 3
@@ -338,6 +340,8 @@ class XValkeyPipeline:
             for (_, _, _, transform), result in zip(queued, results)
         ]
 
+
+load_project_env()
 
 xvalkey = XValkey(
     url=os.environ.get("VALKEY_URL", "valkey://localhost:6379/0"),
