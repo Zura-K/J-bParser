@@ -19,6 +19,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=8",
+    "pytest-cov>=6",
 ]
 
 # The backend is not an installable package: page folders (auth, profiles,
@@ -31,3 +32,6 @@ package = false
 [tool.pytest.ini_options]
 testpaths = ["../tests"]
 pythonpath = ["."]
+
+[tool.coverage.run]
+omit = [".venv/*"]
