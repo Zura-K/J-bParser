@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { AnonId, ApiFetch, SessionToken, SetSessionToken } from "./Api"
+import { AnonId, ApiFetch, SessionToken, SetSessionToken } from "../library/ts/Api"
 
 const UuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 

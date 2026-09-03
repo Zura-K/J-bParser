@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { Profiles } from "./Profiles"
+import { Profiles } from "../components/profiles/Profiles"
 
 type FetchCall = { Path: string; Method: string; Body: unknown }
 
