@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { createElement, StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { InitSentry } from "../ts/Sentry"
+import { InitSentry } from "../components/library/ts/Sentry"
 import { App } from "./App"
-import "../css/Theme.css"
+import "../components/library/css/Theme.css"
 
 InitSentry()
 

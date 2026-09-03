@@ -53,7 +53,7 @@ def load_project_env():
     _loaded = True
 
     project_root = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
+        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir)
     )
     candidates = [
         os.path.join(project_root, ".env"),

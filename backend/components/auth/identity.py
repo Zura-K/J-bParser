@@ -4,7 +4,7 @@ import time
 
 from fastapi import Header, HTTPException
 
-from library import limits, store
+from components.library import limits, store
 
 session_ttl_seconds = 30 * 86400
 anon_id_pattern = re.compile(r"[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}")

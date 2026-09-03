@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "lint": "eslint app components ts",
+    "lint": "eslint app components",
     "preview": "vite preview",
     "test": "vitest run --coverage"
   },

@@ -2,8 +2,8 @@ import gzip
 import time
 from collections.abc import Container, Iterable
 
-from library import keys
-from library.valkey import xvalkey
+from components.library import keys
+from components.library.valkey import xvalkey
 
 listing_ttl_seconds = 30 * 86400
 raw_ttl_seconds = 3 * 86400

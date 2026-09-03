@@ -3,9 +3,9 @@ import json
 import os
 import time
 
-from library import dedupe, env, error_logger, ranking, store
-from library.sentry import XSentry
-from library.valkey import xvalkey
+from components.library import dedupe, env, error_logger, ranking, store
+from components.library.sentry import XSentry
+from components.library.valkey import xvalkey
 from components.sources import clean, extract, handlers
 from components.sources.catalog import sources
 

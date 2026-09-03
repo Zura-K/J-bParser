@@ -5,7 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 import api
-from library import ranking, store
+from components.library import ranking, store
 
 client = TestClient(api.app)
 

@@ -8,7 +8,7 @@ from collections.abc import Callable, Iterable
 
 import valkey
 
-from library import env, error_logger
+from components.library import env, error_logger
 
 connection_retry_attempts = 3
 retry_base_delay_seconds = 0.2

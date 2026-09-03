@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createElement, useState } from "react"
-import { ApiFetch, type MeResponse, type ProfileFields } from "../../ts/Api"
+import { ApiFetch, type MeResponse, type ProfileFields } from "../library/ts/Api"
 import { ProfilesTemplate } from "./ProfilesTemplate"
 
 export const EmptyProfile: ProfileFields = {

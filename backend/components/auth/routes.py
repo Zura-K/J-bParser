@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel
 
 from components.auth.identity import anon_id_pattern, open_session, resolve_user_id
-from library import limits, store
+from components.library import limits, store
 
 router = APIRouter()
 hasher = PasswordHasher()

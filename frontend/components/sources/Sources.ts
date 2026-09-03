@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { createElement } from "react"
-import { ApiFetch, type SourceRow } from "../../ts/Api"
+import { ApiFetch, type SourceRow } from "../library/ts/Api"
 import { SourcesTemplate } from "./SourcesTemplate"
 
 export type SourcesState = {

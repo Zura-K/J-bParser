@@ -9,7 +9,7 @@ test_port = "6391"
 os.environ["VALKEY_URL"] = f"valkey://localhost:{test_port}/0"
 os.environ["VALKEY_NAMESPACE"] = "test"
 
-from library.valkey import xvalkey
+from components.library.valkey import xvalkey
 
 
 @pytest.fixture(scope="session", autouse=True)
