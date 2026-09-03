@@ -12,7 +12,6 @@ def make_listing(**overrides):
         "location": "Berlin, Germany",
         "url": "https://example.com/jobs/1",
         "source": "greenhouse:acme",
-        "posted_at": 1700000000.0,
         "ingested_at": time.time() - 7 * 86400,
         "body": "Build services in Python.",
         "vector": [0.1, 0.2, 0.3],
@@ -29,8 +28,6 @@ def test_listing_round_trip():
     assert loaded["company"] == "Acme"
     assert loaded["vector"] == pytest.approx([0.1, 0.2, 0.3])
     assert store.load_listing("missing") is None
-    assert store.fingerprint_seen("fp-1")
-    assert not store.fingerprint_seen("fp-other")
 
 
 def test_find_candidates_applies_filters():
@@ -51,7 +48,7 @@ def test_find_candidates_applies_filters():
     )
     store.save_listing("good", make_listing(fingerprint="fp-good", ingested_at=now - 86400))
     candidates = store.find_candidates(
-        ingested_before=now - 3600,
+        posted_before=now - 3600,
         excluded_keywords=["php"],
         dismissed_fingerprints={"fp-dismissed"},
         locations=["berlin"],
@@ -64,8 +61,54 @@ def test_find_candidates_without_filters_orders_by_age():
     now = time.time()
     store.save_listing("older", make_listing(fingerprint="fp-a", ingested_at=now - 200))
     store.save_listing("newer", make_listing(fingerprint="fp-b", ingested_at=now - 100))
-    candidates = store.find_candidates(ingested_before=now)
+    candidates = store.find_candidates(posted_before=now)
     assert [candidate["listing_id"] for candidate in candidates] == ["older", "newer"]
+
+
+def test_find_candidates_prefers_posted_at_over_ingested_at():
+    now = time.time()
+    store.save_listing(
+        "backfilled",
+        make_listing(fingerprint="fp-old", ingested_at=now, posted_at=now - 10 * 86400),
+    )
+    store.save_listing(
+        "brand_new",
+        make_listing(fingerprint="fp-new", ingested_at=now, posted_at=now),
+    )
+    candidates = store.find_candidates(posted_before=now - 86400)
+    assert [candidate["listing_id"] for candidate in candidates] == ["backfilled"]
+
+
+def test_find_candidates_structured_filters():
+    now = time.time()
+    store.save_listing(
+        "senior_remote",
+        make_listing(
+            fingerprint="fp-sr",
+            ingested_at=now - 86400,
+            seniority="senior",
+            remote_mode="remote",
+        ),
+    )
+    store.save_listing(
+        "junior_onsite",
+        make_listing(
+            fingerprint="fp-jo",
+            ingested_at=now - 7200,
+            seniority="junior",
+            remote_mode="onsite",
+        ),
+    )
+    store.save_listing(
+        "unlabeled", make_listing(fingerprint="fp-un", ingested_at=now - 3600)
+    )
+    candidates = store.find_candidates(
+        posted_before=now, seniorities=["senior"], remote_modes=["remote"]
+    )
+    assert [candidate["listing_id"] for candidate in candidates] == [
+        "senior_remote",
+        "unlabeled",
+    ]
 
 
 def test_raw_round_trip():

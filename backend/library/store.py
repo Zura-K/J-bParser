@@ -50,11 +50,11 @@ def _load_hash(key: str) -> dict | None:
 
 def save_listing(listing_id: str, fields: dict) -> None:
     key = keys.listing(listing_id)
+    freshness = float(fields.get("posted_at") or fields["ingested_at"])
     pipe = client.pipeline()
     pipe.hset(key, mapping=_encode_fields(fields))
     pipe.expire(key, listing_ttl_seconds)
-    pipe.zadd(keys.listings, {listing_id: float(fields["ingested_at"])})
-    pipe.sadd(keys.fingerprints, fields["fingerprint"])
+    pipe.zadd(keys.listings, {listing_id: freshness})
     pipe.zremrangebyscore(keys.listings, "-inf", time.time() - listing_ttl_seconds)
     pipe.execute()
 
@@ -64,17 +64,23 @@ def load_listing(listing_id: str) -> dict | None:
 
 
 def find_candidates(
-    ingested_before: float,
+    posted_before: float,
     excluded_keywords: Iterable[str] = (),
     dismissed_fingerprints: Container[str] = frozenset(),
     locations: Iterable[str] = (),
+    seniorities: Iterable[str] = (),
+    remote_modes: Iterable[str] = (),
+    employment_types: Iterable[str] = (),
 ) -> list[dict]:
-    listing_ids = client.zrangebyscore(keys.listings, "-inf", ingested_before)
+    listing_ids = client.zrangebyscore(keys.listings, "-inf", posted_before)
     pipe = client.pipeline()
     for listing_id in listing_ids:
         pipe.hgetall(keys.listing(listing_id.decode()))
     lowered_excluded = [keyword.lower() for keyword in excluded_keywords]
     lowered_locations = [location.lower() for location in locations]
+    wanted_seniorities = {value.lower() for value in seniorities}
+    wanted_remote_modes = {value.lower() for value in remote_modes}
+    wanted_employment_types = {value.lower() for value in employment_types}
     candidates = []
     for listing_id, raw_hash in zip(listing_ids, pipe.execute()):
         if not raw_hash:
@@ -90,13 +96,21 @@ def find_candidates(
             location in listing_location for location in lowered_locations
         ):
             continue
+        if _known_value_rejected(fields.get("seniority", ""), wanted_seniorities):
+            continue
+        if _known_value_rejected(fields.get("remote_mode", ""), wanted_remote_modes):
+            continue
+        if _known_value_rejected(
+            fields.get("employment_type", ""), wanted_employment_types
+        ):
+            continue
         fields["listing_id"] = listing_id.decode()
         candidates.append(fields)
     return candidates
 
 
-def fingerprint_seen(fingerprint: str) -> bool:
-    return bool(client.sismember(keys.fingerprints, fingerprint))
+def _known_value_rejected(value: str, wanted: set[str]) -> bool:
+    return bool(wanted) and value != "" and value.lower() not in wanted
 
 
 def save_raw(url_hash: str, body: bytes) -> None:
@@ -106,6 +120,10 @@ def save_raw(url_hash: str, body: bytes) -> None:
 def load_raw(url_hash: str) -> bytes | None:
     blob = client.get(keys.raw(url_hash))
     return gzip.decompress(blob) if blob is not None else None
+
+
+def acquire_manual_run(cooldown_seconds: int) -> bool:
+    return bool(client.set(keys.manual_run, "1", nx=True, ex=cooldown_seconds))
 
 
 def push_ingest(item: str) -> None:

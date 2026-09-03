@@ -1,6 +1,6 @@
 listings = "Listings"
-fingerprints = "Fingerprints"
 queue_ingest = "Queue:Ingest"
+manual_run = "ManualRun"
 
 
 def listing(listing_id: str) -> str:

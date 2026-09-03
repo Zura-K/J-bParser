@@ -94,6 +94,9 @@ export type SearchResult = {
 export type SourceRow = {
   key: string
   handler: string
+  company: string
+  region: string
+  active: boolean
   next_run_at: number
   last_run_at: number
   last_status: string

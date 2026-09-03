@@ -44,7 +44,9 @@ def _parse_greenhouse(config: dict, data: dict) -> list[dict]:
         listings.append(
             {
                 "title": job.get("title", ""),
-                "company": config["board"],
+                "company": job.get("company_name")
+                or config.get("company")
+                or config["board"],
                 "location": (job.get("location") or {}).get("name", ""),
                 "url": job.get("absolute_url", ""),
                 "posted_at": iso_to_epoch(
@@ -65,7 +67,7 @@ def _parse_lever(config: dict, data: list) -> list[dict]:
         listings.append(
             {
                 "title": posting.get("text", ""),
-                "company": config["org"],
+                "company": config.get("company") or config["org"],
                 "location": (posting.get("categories") or {}).get("location", ""),
                 "url": posting.get("hostedUrl", ""),
                 "posted_at": float(posting.get("createdAt", 0)) / 1000,
@@ -83,7 +85,7 @@ def _parse_ashby(config: dict, data: dict) -> list[dict]:
         listings.append(
             {
                 "title": job.get("title", ""),
-                "company": config["org"],
+                "company": config.get("company") or config["org"],
                 "location": job.get("location", ""),
                 "url": job.get("jobUrl") or job.get("applyUrl", ""),
                 "posted_at": iso_to_epoch(job.get("publishedAt") or ""),

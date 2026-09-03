@@ -31,7 +31,10 @@ export function Sources() {
           <tbody>
             {(SourcesQuery.data?.sources ?? []).map((Row) => (
               <tr key={Row.key}>
-                <td className={Styles.SourceKey}>{Row.key}</td>
+                <td className={Styles.SourceKey}>
+                  {Row.company !== "" ? `${Row.company} (${Row.key})` : Row.key}
+                  {!Row.active && <span className={Styles.Inactive}>inactive</span>}
+                </td>
                 <td>
                   <span
                     className={

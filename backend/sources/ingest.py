@@ -4,10 +4,11 @@ import os
 import time
 
 from library import dedupe, ranking, store
-from sources import handlers
+from sources import clean, extract, handlers
 from sources.catalog import sources
 
 max_backoff_seconds = 86400
+max_listing_age_days = float(os.environ.get("MAX_LISTING_AGE_DAYS", "45"))
 
 
 def url_hash(url: str) -> str:
@@ -21,17 +22,34 @@ def find_source(source_key: str) -> dict | None:
     return None
 
 
+def _queue_source(config: dict, now: float) -> None:
+    store.save_source_state(
+        config["key"], {"next_run_at": now + config["poll_minutes"] * 60}
+    )
+    store.push_ingest(config["key"])
+
+
 def schedule_due(now: float | None = None) -> list[str]:
     now = time.time() if now is None else now
     queued = []
     for config in sources:
+        if not config.get("active", True):
+            continue
         state = store.load_source_state(config["key"]) or {}
         if float(state.get("next_run_at", 0)) <= now:
-            store.save_source_state(
-                config["key"], {"next_run_at": now + config["poll_minutes"] * 60}
-            )
-            store.push_ingest(config["key"])
+            _queue_source(config, now)
             queued.append(config["key"])
+    return queued
+
+
+def queue_all(now: float | None = None) -> list[str]:
+    now = time.time() if now is None else now
+    queued = []
+    for config in sources:
+        if not config.get("active", True):
+            continue
+        _queue_source(config, now)
+        queued.append(config["key"])
     return queued
 
 
@@ -39,20 +57,46 @@ def store_parsed(source_key: str, listings: list[dict]) -> tuple[int, int]:
     stored = 0
     skipped = 0
     now = time.time()
+    posted_cutoff = now - max_listing_age_days * 86400
+    seen_this_run = set()
+    pending = []
     for item in listings:
+        posted_at = float(item.get("posted_at") or 0)
+        if posted_at and posted_at < posted_cutoff:
+            skipped += 1
+            continue
         fingerprint = dedupe.make_fingerprint(
             item["company"], item["title"], item["location"]
         )
-        if store.fingerprint_seen(fingerprint):
+        if fingerprint in seen_this_run:
             skipped += 1
             continue
-        vector = ranking.embed_text(item["title"] + "\n" + item["body"])
+        seen_this_run.add(fingerprint)
+        item = {**item, "body": clean.clean_body(item.get("body", ""))}
+        existing = store.load_listing(fingerprint)
+        if existing is not None:
+            unchanged = all(
+                existing.get(name, "") == str(item.get(name, ""))
+                for name in ("title", "location", "body")
+            )
+            if unchanged:
+                skipped += 1
+                continue
+        ingested_at = now if existing is None else float(existing["ingested_at"])
+        pending.append((fingerprint, ingested_at, item))
+    vectors = ranking.embed_texts(
+        [item["title"] + "\n" + item["body"] for _, _, item in pending]
+    )
+    for (fingerprint, ingested_at, item), vector in zip(pending, vectors):
         store.save_listing(
             fingerprint,
             {
                 **item,
+                **extract.extract_fields(
+                    item["title"], item.get("location", ""), item["body"]
+                ),
                 "source": source_key,
-                "ingested_at": now,
+                "ingested_at": ingested_at,
                 "fingerprint": fingerprint,
                 "vector": vector,
             },

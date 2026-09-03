@@ -14,19 +14,45 @@ user_agent = (
 )
 
 
+class SoftBlocked(RuntimeError):
+    pass
+
+
 class LinkedinHandler:
     def __init__(self):
         self.min_request_gap_seconds = 4.0
         self.max_detail_fetches = 25
+        self.max_search_pages = 4
+        self.page_size = 25
+        self.default_recency_seconds = 172800
         self.last_request_at = 0.0
 
     def fetch(self, config: dict) -> list[tuple[str, bytes]]:
-        query = urlencode(
-            {"keywords": config["keywords"], "location": config["location"], "start": 0}
-        )
-        search_url = f"{search_endpoint}?{query}"
-        pages = [(search_url, self._throttled_get(search_url))]
-        for job_id in self._job_ids(pages[0][1])[: self.max_detail_fetches]:
+        recency = int(config.get("recency_seconds", self.default_recency_seconds))
+        max_pages = int(config.get("max_pages", self.max_search_pages))
+        pages = []
+        job_ids = []
+        seen_ids = set()
+        for page_index in range(max_pages):
+            query = urlencode(
+                {
+                    "keywords": config["keywords"],
+                    "location": config["location"],
+                    "f_TPR": f"r{recency}",
+                    "start": page_index * self.page_size,
+                }
+            )
+            search_url = f"{search_endpoint}?{query}"
+            body = self._throttled_get(search_url)
+            pages.append((search_url, body))
+            new_ids = [
+                job_id for job_id in self._job_ids(body) if job_id not in seen_ids
+            ]
+            if not new_ids:
+                break
+            seen_ids.update(new_ids)
+            job_ids.extend(new_ids)
+        for job_id in job_ids[: self.max_detail_fetches]:
             detail_url = posting_endpoint + job_id
             pages.append((detail_url, self._throttled_get(detail_url)))
         return pages
@@ -51,7 +77,9 @@ class LinkedinHandler:
         response = httpx.get(
             url, headers={"user-agent": user_agent}, timeout=30, follow_redirects=True
         )
-        if response.status_code in (403, 429, 999):
+        if response.status_code == 999:
+            raise SoftBlocked("linkedin returned 999 (soft block), backing off")
+        if response.status_code in (403, 429):
             return self._playwright_get(url)
         response.raise_for_status()
         return response.content
@@ -75,7 +103,7 @@ class LinkedinHandler:
 
         cards = {}
         tree = HTMLParser(body)
-        for node in tree.css("div.base-card, li"):
+        for node in tree.css("div.base-card") or tree.css("li"):
             urn = node.attributes.get("data-entity-urn", "") or ""
             link = node.css_first("a.base-card__full-link") or node.css_first("a")
             title = node.css_first("h3.base-search-card__title") or node.css_first("h3")

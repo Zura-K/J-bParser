@@ -13,6 +13,7 @@ function Age(PostedAt: number): string {
 
 export function Results() {
   const [SelectedProfile, SetSelectedProfile] = useState("")
+  const [RunNote, SetRunNote] = useState("")
   const Cache = useQueryClient()
   const ProfilesQuery = useQuery({
     queryKey: ["profiles"],
@@ -25,6 +26,16 @@ export function Results() {
     queryFn: () => ApiFetch<{ results: SearchResult[] }>(`/api/search/${ActiveProfile}`),
     enabled: ActiveProfile !== "",
     retry: false,
+    refetchInterval: 60000,
+  })
+  const RunSources = useMutation({
+    mutationFn: () => ApiFetch<{ queued: string[] }>("/api/sources/run", "POST"),
+    onSuccess: (Reply) => {
+      SetRunNote(`Queued ${Reply.queued.length} sources — matches update as crawls finish`)
+      Cache.invalidateQueries({ queryKey: ["sources"] })
+    },
+    onError: (Caught) =>
+      SetRunNote(Caught instanceof Error ? Caught.message : String(Caught)),
   })
   const Dismiss = useMutation({
     mutationFn: (Fingerprint: string) =>
@@ -55,6 +66,14 @@ export function Results() {
             ))}
           </select>
         </label>
+        <button
+          className={Styles.RunButton}
+          onClick={() => RunSources.mutate()}
+          disabled={RunSources.isPending}
+        >
+          {RunSources.isPending ? "Queueing…" : "Run sources now"}
+        </button>
+        {RunNote !== "" && <span className={Styles.RunNote}>{RunNote}</span>}
       </div>
       {SearchQuery.isError && (
         <p className={Styles.Error}>{String(SearchQuery.error)}</p>

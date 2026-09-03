@@ -118,7 +118,6 @@ export function Profiles() {
               ? `Profile limit reached (${MaxProfiles} on your tier)`
               : "+ New profile"}
           </button>
-          </button>
         </div>
         <form
           className={Styles.Editor}

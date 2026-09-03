@@ -20,6 +20,7 @@ def anon_headers():
 
 
 def seed_listing(fingerprint, age_hours, vector, title="Engineer", body="Python work"):
+    seeded_at = time.time() - age_hours * 3600
     store.save_listing(
         fingerprint,
         {
@@ -28,8 +29,8 @@ def seed_listing(fingerprint, age_hours, vector, title="Engineer", body="Python 
             "location": "Berlin",
             "url": f"https://example.com/{fingerprint}",
             "source": "fake:test",
-            "posted_at": 1700000000.0,
-            "ingested_at": time.time() - age_hours * 3600,
+            "posted_at": seeded_at,
+            "ingested_at": seeded_at,
             "body": body,
             "vector": vector,
             "fingerprint": fingerprint,
@@ -170,13 +171,28 @@ def test_tier_freshness_gating():
 
 
 def test_sources_status():
+    from sources.catalog import sources as catalog_sources
+
     headers = anon_headers()
     rows = client.get("/api/sources", headers=headers).json()["sources"]
     assert {row["key"] for row in rows} == {
-        "greenhouse:gitlab",
-        "greenhouse:cloudflare",
-        "lever:plaid",
-        "ashby:linear",
-        "linkedin:guest",
+        config["key"] for config in catalog_sources
     }
     assert rows[0]["last_status"] == "never run"
+    assert rows[0]["active"] is True
+
+
+def test_manual_run_queues_active_sources_with_cooldown():
+    from sources.catalog import sources as catalog_sources
+
+    headers = anon_headers()
+    reply = client.post("/api/sources/run", headers=headers)
+    assert reply.status_code == 200
+    active_keys = [
+        config["key"] for config in catalog_sources if config.get("active", True)
+    ]
+    assert reply.json()["queued"] == active_keys
+    assert store.claim_ingest("w1", timeout_seconds=1) == active_keys[0]
+    blocked = client.post("/api/sources/run", headers=headers)
+    assert blocked.status_code == 429
+    assert "cooldown" in blocked.json()["detail"]

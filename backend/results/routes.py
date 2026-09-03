@@ -14,8 +14,27 @@ class DismissPayload(BaseModel):
     fingerprint: str
 
 
+remote_mode_hints = {
+    "yes": "remote",
+    "remote": "remote",
+    "no": "onsite",
+    "onsite": "onsite",
+    "on-site": "onsite",
+    "office": "onsite",
+    "hybrid": "hybrid",
+}
+
+
 def split_csv(value: str) -> list[str]:
     return [part.strip() for part in value.split(",") if part.strip()]
+
+
+def remote_modes_from_profile(value: str) -> list[str]:
+    return [
+        remote_mode_hints[part.lower()]
+        for part in split_csv(value)
+        if part.lower() in remote_mode_hints
+    ]
 
 
 @router.get("/api/search/{profile_id}")
@@ -28,10 +47,12 @@ def search(profile_id: str, user_id: str = Depends(resolve_user_id)) -> dict:
         raise HTTPException(status_code=400, detail="profile has no description")
     quotas = quotas_for_user(user_id)
     candidates = store.find_candidates(
-        ingested_before=time.time() - quotas.delay_hours * 3600,
+        posted_before=time.time() - quotas.delay_hours * 3600,
         excluded_keywords=split_csv(profile.get("excluded", "")),
         dismissed_fingerprints=store.load_dismissed(user_id),
         locations=split_csv(profile.get("locations", "")),
+        seniorities=split_csv(profile.get("seniority", "")),
+        remote_modes=remote_modes_from_profile(profile.get("remote", "")),
     )
     scored = ranking.score_candidates(vector, candidates)[: quotas.max_results]
     reason_map = {}

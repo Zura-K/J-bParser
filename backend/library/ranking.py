@@ -18,6 +18,15 @@ def embed_text(text: str) -> list[float]:
     return [float(value) for value in load_model().encode(text, normalize_embeddings=True)]
 
 
+def embed_texts(texts: list[str], batch_size: int = 256) -> list[list[float]]:
+    if not texts:
+        return []
+    vectors = load_model().encode(
+        texts, batch_size=batch_size, normalize_embeddings=True
+    )
+    return [[float(value) for value in vector] for vector in vectors]
+
+
 def score_candidates(
     profile_vector: Sequence[float], candidates: list[dict]
 ) -> list[dict]:
