@@ -1,7 +1,6 @@
 import inspect
 import os
 import traceback
-from datetime import datetime
 
 from library import sentry as sentry_module
 from library.sentry import XSentry
@@ -10,10 +9,6 @@ _internal_files = {
     os.path.abspath(__file__),
     os.path.abspath(sentry_module.__file__),
 }
-
-
-def _get_now() -> str:
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def _caller_location() -> tuple[str, int, str]:
@@ -29,83 +24,79 @@ def _caller_location() -> tuple[str, int, str]:
 class XErrorLogger(object):
 
     @staticmethod
-    @XSentry.wrap_span("XErrorLogger.LogError")
-    def LogError(Exc=None, Msg='❌ Error', Tags=None, Fingerprint=None):
-        """Logs exceptions with detailed traceback info and reports to Sentry."""
+    @XSentry.wrap_span("XErrorLogger.Log")
+    def Log(
+        Msg,
+        Severity,
+        ExtraData=None,
+        HelpLink=None,
+        Exc=None,
+        Tags=None,
+        Fingerprint=None,
+        IncludeLocation=True,
+    ):
+        """Reports a message or exception to Sentry with location and extra context."""
         try:
-            if Exc:
+            extra = dict(ExtraData or {})
+            if HelpLink is not None:
+                extra["help_link"] = HelpLink
+            if Exc is not None:
                 tb = traceback.extract_tb(Exc.__traceback__)
                 if tb:
-                    last_entry = tb[-1]
-                    filename = last_entry.filename
-                    lineno = last_entry.lineno
-                    func_name = getattr(last_entry, 'name', 'Unknown')
-                    print(f"{_get_now()} ❌[ERROR] {Msg}: {Exc} | 📂 File: {filename} | 📌 Line: {lineno} | 🏷️ Function: {func_name}")
-                else:
-                    print(f"{_get_now()} ❌[ERROR] {Msg}: {Exc} (⚠️ No traceback available)")
-                XSentry.capture_exception(Exc, tags=Tags, fingerprint=Fingerprint)
-            else:
-                print(f"{_get_now()} ❌[ERROR] {Msg}: (⚠️ No exception object provided)")
-        except Exception as e:
-            print(f"{_get_now()} ❌ Failed to log error: {e} | 🔄 Original Exception: {Exc}")
+                    extra.setdefault("file", tb[-1].filename)
+                    extra.setdefault("line", tb[-1].lineno)
+                    extra.setdefault("function", getattr(tb[-1], "name", "Unknown"))
+                XSentry.capture_exception(
+                    Exc, tags=Tags, fingerprint=Fingerprint, extras=extra
+                )
+                return
+            if IncludeLocation:
+                filename, lineno, func_name = _caller_location()
+                extra.setdefault("file", filename)
+                extra.setdefault("line", lineno)
+                extra.setdefault("function", func_name)
+            XSentry.capture_message(
+                Msg, Severity, tags=Tags, fingerprint=Fingerprint, extras=extra
+            )
+        except Exception:
+            pass
 
     @staticmethod
-    @XSentry.wrap_span("XErrorLogger.LogWarning")
-    def LogWarning(Msg):
-        """Logs warning messages and sends breadcrumb to Sentry."""
-        try:
-            filename, lineno, func_name = _caller_location()
-            print(f"{_get_now()} ⚠️ [WARNING] {Msg} (📂 File: {filename} | 📌 Line: {lineno} | 🏷️ Function: {func_name})")
-            XSentry.add_breadcrumb(message=Msg, category="warning", level="warning")
-        except Exception as e:
-            print(f"{_get_now()} ❌ Failed to log warning: {e}")
+    def LogError(Exc=None, Msg='❌ Error', ExtraData=None, HelpLink=None, Tags=None, Fingerprint=None):
+        XErrorLogger.Log(Msg, 'error', ExtraData, HelpLink, Exc, Tags, Fingerprint)
 
     @staticmethod
-    @XSentry.wrap_span("XErrorLogger.LogNotice")
-    def LogNotice(Msg):
-        """Logs notable events and sends breadcrumb to Sentry."""
-        try:
-            filename, lineno, func_name = _caller_location()
-            print(f"{_get_now()} 📢 [NOTICE] {Msg} (📂 File: {filename} | 📌 Line: {lineno} | 🏷️ Function: {func_name})")
-            XSentry.add_breadcrumb(message=Msg, category="notice", level="info")
-        except Exception as e:
-            print(f"{_get_now()} ❌ Failed to log notice: {e}")
+    def LogWarning(Msg, ExtraData=None, HelpLink=None):
+        XErrorLogger.Log(Msg, 'warning', ExtraData, HelpLink)
 
     @staticmethod
-    @XSentry.wrap_span("XErrorLogger.LogDebug")
-    def LogDebug(Msg):
-        """Logs debugging messages with file and line number."""
-        try:
-            filename, lineno, func_name = _caller_location()
-            print(f"{_get_now()} 🛠️ [DEBUG] {Msg} (📂 File: {filename} | 📌 Line: {lineno} | 🏷️ Function: {func_name})")
-        except Exception as e:
-            print(f"{_get_now()} ❌ Failed to log debug info: {e}")
+    def LogNotice(Msg, ExtraData=None, HelpLink=None):
+        XErrorLogger.Log(Msg, 'log', ExtraData, HelpLink)
 
     @staticmethod
-    @XSentry.wrap_span("XErrorLogger.LogInfo")
-    def LogInfo(Msg):
-        """Logs general info messages."""
-        try:
-            print(f"{_get_now()} ℹ️ [INFO] {Msg}")
-        except Exception as e:
-            print(f"{_get_now()} ❌ Failed to log info: {e}")
+    def LogDebug(Msg, ExtraData=None, HelpLink=None):
+        XErrorLogger.Log(Msg, 'debug', ExtraData, HelpLink)
+
+    @staticmethod
+    def LogInfo(Msg, ExtraData=None, HelpLink=None):
+        XErrorLogger.Log(Msg, 'info', ExtraData, HelpLink, IncludeLocation=False)
 
 
-def LogError(Exc=None, Msg='❌ Error', Tags=None, Fingerprint=None):
-    XErrorLogger.LogError(Exc, Msg, Tags, Fingerprint)
+def LogError(Exc=None, Msg='❌ Error', ExtraData=None, HelpLink=None, Tags=None, Fingerprint=None):
+    XErrorLogger.LogError(Exc, Msg, ExtraData, HelpLink, Tags, Fingerprint)
 
 
-def LogWarning(Msg):
-    XErrorLogger.LogWarning(Msg)
+def LogWarning(Msg, ExtraData=None, HelpLink=None):
+    XErrorLogger.LogWarning(Msg, ExtraData, HelpLink)
 
 
-def LogNotice(Msg):
-    XErrorLogger.LogNotice(Msg)
+def LogNotice(Msg, ExtraData=None, HelpLink=None):
+    XErrorLogger.LogNotice(Msg, ExtraData, HelpLink)
 
 
-def LogDebug(Msg):
-    XErrorLogger.LogDebug(Msg)
+def LogDebug(Msg, ExtraData=None, HelpLink=None):
+    XErrorLogger.LogDebug(Msg, ExtraData, HelpLink)
 
 
-def LogInfo(Msg):
-    XErrorLogger.LogInfo(Msg)
+def LogInfo(Msg, ExtraData=None, HelpLink=None):
+    XErrorLogger.LogInfo(Msg, ExtraData, HelpLink)

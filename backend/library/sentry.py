@@ -89,17 +89,32 @@ class XSentry:
         return sentry_sdk.start_span(name=description, op=op)
 
     @staticmethod
-    def capture_exception(exc, tags=None, fingerprint=None):
+    def capture_exception(exc, tags=None, fingerprint=None, extras=None):
         if not SENTRY_AVAILABLE:
             return
         if _is_expected(exc):
             return
         with sentry_sdk.new_scope() as scope:
+            for name, value in (extras or {}).items():
+                scope.set_extra(name, value)
             for name, value in (tags or {}).items():
                 scope.set_tag(name, value)
             if fingerprint:
                 scope.fingerprint = list(fingerprint)
             sentry_sdk.capture_exception(exc)
+
+    @staticmethod
+    def capture_message(message, severity='info', tags=None, fingerprint=None, extras=None):
+        if not SENTRY_AVAILABLE:
+            return
+        with sentry_sdk.new_scope() as scope:
+            for name, value in (extras or {}).items():
+                scope.set_extra(name, value)
+            for name, value in (tags or {}).items():
+                scope.set_tag(name, value)
+            if fingerprint:
+                scope.fingerprint = list(fingerprint)
+            sentry_sdk.capture_message(message, level=severity)
 
     @staticmethod
     def set_tag(name: str, value: str):
