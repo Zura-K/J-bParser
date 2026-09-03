@@ -5,7 +5,7 @@ from datetime import datetime
 
 import httpx
 
-from sources import handlers
+from components.sources import handlers
 
 
 def fetch(config: dict) -> list[tuple[str, bytes]]:

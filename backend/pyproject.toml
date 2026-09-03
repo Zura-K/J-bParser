@@ -22,8 +22,8 @@ dev = [
     "pytest-cov>=6",
 ]
 
-# The backend is not an installable package: page folders (auth, profiles,
-# results, sources) and library/ sit directly in backend/ and are imported
+# The backend is not an installable package: page folders live under
+# components/ and, with library/, sit directly in backend/ and are imported
 # with backend/ as the working directory.
 [tool.uv]
 package = false

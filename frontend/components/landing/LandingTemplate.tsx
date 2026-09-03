@@ -1,5 +1,5 @@
+import type { LandingProps } from "./Landing"
 import Styles from "./Landing.module.css"
-import { type ThemeName } from "../library/Theme"
 
 const Features = [
   {
@@ -37,11 +37,7 @@ const Steps = [
   },
 ]
 
-export function Landing(Props: {
-  OnEnter: () => void
-  Theme: ThemeName
-  ToggleTheme: () => void
-}) {
+export function LandingTemplate(Props: LandingProps) {
   return (
     <div className={Styles.Shell}>
       <header className={Styles.Header}>

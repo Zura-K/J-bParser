@@ -171,7 +171,7 @@ def test_tier_freshness_gating():
 
 
 def test_sources_status():
-    from sources.catalog import sources as catalog_sources
+    from components.sources.catalog import sources as catalog_sources
 
     headers = anon_headers()
     rows = client.get("/api/sources", headers=headers).json()["sources"]
@@ -183,7 +183,7 @@ def test_sources_status():
 
 
 def test_manual_run_queues_active_sources_with_cooldown():
-    from sources.catalog import sources as catalog_sources
+    from components.sources.catalog import sources as catalog_sources
 
     headers = anon_headers()
     reply = client.post("/api/sources/run", headers=headers)

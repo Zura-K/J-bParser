@@ -2,10 +2,10 @@ import os
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from auth.identity import resolve_user_id
+from components.auth.identity import resolve_user_id
 from library import store
-from sources import ingest
-from sources.catalog import sources
+from components.sources import ingest
+from components.sources.catalog import sources
 
 router = APIRouter()
 manual_run_cooldown_seconds = int(os.environ.get("MANUAL_RUN_COOLDOWN_SECONDS", "300"))

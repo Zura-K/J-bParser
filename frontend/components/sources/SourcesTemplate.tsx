@@ -1,17 +1,11 @@
-import { useQuery } from "@tanstack/react-query"
-import { ApiFetch, type SourceRow } from "../library/Api"
+import type { SourcesState } from "./Sources"
 import Styles from "./Sources.module.css"
 
 function Stamp(Epoch: number): string {
   return Epoch ? new Date(Epoch * 1000).toISOString().slice(0, 16).replace("T", " ") : "—"
 }
 
-export function Sources() {
-  const SourcesQuery = useQuery({
-    queryKey: ["sources"],
-    queryFn: () => ApiFetch<{ sources: SourceRow[] }>("/api/sources"),
-    refetchInterval: 30000,
-  })
+export function SourcesTemplate(Props: SourcesState) {
   return (
     <div>
       <h1 className={Styles.Title}>Sources</h1>
@@ -29,7 +23,7 @@ export function Sources() {
             </tr>
           </thead>
           <tbody>
-            {(SourcesQuery.data?.sources ?? []).map((Row) => (
+            {Props.Rows.map((Row) => (
               <tr key={Row.key}>
                 <td className={Styles.SourceKey}>
                   {Row.company !== "" ? `${Row.company} (${Row.key})` : Row.key}

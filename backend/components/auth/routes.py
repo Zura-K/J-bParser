@@ -6,7 +6,7 @@ from argon2.exceptions import VerifyMismatchError
 from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel
 
-from auth.identity import anon_id_pattern, open_session, resolve_user_id
+from components.auth.identity import anon_id_pattern, open_session, resolve_user_id
 from library import limits, store
 
 router = APIRouter()

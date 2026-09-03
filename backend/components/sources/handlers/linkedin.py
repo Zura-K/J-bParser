@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 
 import httpx
 
-from sources import handlers
+from components.sources import handlers
 
 search_endpoint = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search"
 posting_endpoint = "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/"
@@ -131,7 +131,7 @@ class LinkedinHandler:
     def _card_posted_at(self, node) -> float:
         time_node = node.css_first("time")
         if time_node is not None:
-            from sources.handlers.ats import iso_to_epoch
+            from components.sources.handlers.ats import iso_to_epoch
 
             return iso_to_epoch(time_node.attributes.get("datetime", "") or "")
         return time.time()

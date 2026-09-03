@@ -2,7 +2,7 @@ import json
 import sys
 
 from library import store
-from sources import handlers, ingest
+from components.sources import handlers, ingest
 
 
 def reparse(source_key: str) -> tuple[int, int]:

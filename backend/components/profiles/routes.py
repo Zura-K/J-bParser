@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from auth.identity import quotas_for_user, resolve_user_id
+from components.auth.identity import quotas_for_user, resolve_user_id
 from library import ranking, store
 
 router = APIRouter()

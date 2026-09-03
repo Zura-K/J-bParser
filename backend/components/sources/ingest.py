@@ -6,8 +6,8 @@ import time
 from library import dedupe, env, error_logger, ranking, store
 from library.sentry import XSentry
 from library.valkey import xvalkey
-from sources import clean, extract, handlers
-from sources.catalog import sources
+from components.sources import clean, extract, handlers
+from components.sources.catalog import sources
 
 max_backoff_seconds = 86400
 max_listing_age_days = float(os.environ.get("MAX_LISTING_AGE_DAYS", "45"))

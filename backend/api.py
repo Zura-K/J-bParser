@@ -5,10 +5,10 @@ from library.sentry import XSentry
 
 XSentry.init("api")
 
-from auth import routes as auth_routes
-from profiles import routes as profile_routes
-from results import routes as result_routes
-from sources import routes as source_routes
+from components.auth import routes as auth_routes
+from components.profiles import routes as profile_routes
+from components.results import routes as result_routes
+from components.sources import routes as source_routes
 
 app = FastAPI()
 app.include_router(auth_routes.router)

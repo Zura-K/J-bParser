@@ -21,11 +21,8 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
     && chmod -R a+rX /opt/hf-cache /opt/pw-browsers
 
 COPY api.py ./
-COPY auth ./auth
+COPY components ./components
 COPY library ./library
-COPY profiles ./profiles
-COPY results ./results
-COPY sources ./sources
 
 RUN useradd --create-home app
 USER app

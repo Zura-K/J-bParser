@@ -5,7 +5,7 @@ import pytest
 
 from library import ranking, store
 from library.valkey import xvalkey
-from sources import clean, extract, handlers, ingest, reparse
+from components.sources import clean, extract, handlers, ingest, reparse
 
 
 @pytest.fixture(autouse=True)
@@ -217,7 +217,7 @@ def test_ats_parsers():
 
 
 def test_linkedin_parse_joins_cards_and_details():
-    from sources.handlers import linkedin
+    from components.sources.handlers import linkedin
 
     search_html = b"""
     <ul>
@@ -246,7 +246,7 @@ def test_linkedin_parse_joins_cards_and_details():
 
 
 def test_linkedin_paginates_until_no_new_ids(monkeypatch):
-    from sources.handlers import linkedin
+    from components.sources.handlers import linkedin
 
     search_html = b"""
     <div class="base-card" data-entity-urn="urn:li:jobPosting:1234567890">
@@ -278,7 +278,7 @@ def test_linkedin_paginates_until_no_new_ids(monkeypatch):
 def test_linkedin_999_raises_soft_block(monkeypatch):
     import httpx
 
-    from sources.handlers import linkedin
+    from components.sources.handlers import linkedin
 
     handler = linkedin.LinkedinHandler()
     handler.min_request_gap_seconds = 0.0

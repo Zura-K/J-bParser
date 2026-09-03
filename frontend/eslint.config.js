@@ -1,7 +1,7 @@
 import tseslint from "typescript-eslint"
 
 export default tseslint.config({
-  files: ["{app,auth,landing,library,profiles,results,sources}/**/*.{ts,tsx}"],
+  files: ["{app,components,ts}/**/*.{ts,tsx}"],
   languageOptions: { parser: tseslint.parser },
   plugins: { "@typescript-eslint": tseslint.plugin },
   rules: {
