@@ -9,7 +9,7 @@ test_port = "6391"
 os.environ["VALKEY_URL"] = f"valkey://localhost:{test_port}/0"
 os.environ["VALKEY_NAMESPACE"] = "test"
 
-from library.valkey import x_valkey
+from library.valkey import xvalkey
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -24,7 +24,7 @@ def valkey_server():
     )
     for _ in range(50):
         try:
-            x_valkey.ping()
+            xvalkey.ping()
             break
         except Exception:
             time.sleep(0.1)
@@ -35,5 +35,5 @@ def valkey_server():
 
 @pytest.fixture(autouse=True)
 def flush_valkey(valkey_server):
-    x_valkey.flushall()
-    x_valkey.clear_memo()
+    xvalkey.flushall()
+    xvalkey.clear_memo()

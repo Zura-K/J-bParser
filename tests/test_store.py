@@ -3,7 +3,7 @@ import time
 import pytest
 
 from library import store
-from library.valkey import x_valkey
+from library.valkey import xvalkey
 
 
 def make_listing(**overrides):
@@ -144,9 +144,9 @@ def test_user_email_and_session():
 
 def test_user_ttl_set_and_cleared():
     store.save_user("u1", {"tier": "Anonymous"}, ttl_seconds=60)
-    assert x_valkey.ttl("User:u1") > 0
+    assert xvalkey.ttl("User:u1") > 0
     store.save_user("u1", {"tier": "Free"})
-    assert x_valkey.ttl("User:u1") == -1
+    assert xvalkey.ttl("User:u1") == -1
 
 
 def test_profiles():
@@ -172,9 +172,9 @@ def test_merge_user_repoints_state():
     assert store.load_user("anon") is None
     assert store.list_profiles("anon") == {}
     assert store.load_profile("acct", "p1")["keywords"] == "python"
-    assert x_valkey.ttl("Profile:acct:p1") == -1
+    assert xvalkey.ttl("Profile:acct:p1") == -1
     assert store.load_dismissed("acct") == {"fp-1", "fp-2"}
-    assert x_valkey.ttl("Dismissed:acct") == -1
+    assert xvalkey.ttl("Dismissed:acct") == -1
 
 
 def test_embed_count_increments_daily():
@@ -184,7 +184,7 @@ def test_embed_count_increments_daily():
     store.bump_embed_count("u1")
     assert store.embed_count("u1") == 2
     assert store.embed_count("u2") == 0
-    assert x_valkey.ttl("EmbedCount:u1") > 0
+    assert xvalkey.ttl("EmbedCount:u1") > 0
 
 
 def test_dismissed():

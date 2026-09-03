@@ -4,7 +4,7 @@ import os
 import time
 
 from library import dedupe, ranking, store
-from library.valkey import x_valkey
+from library.valkey import xvalkey
 from sources import clean, extract, handlers
 from sources.catalog import sources
 
@@ -107,7 +107,7 @@ def store_parsed(source_key: str, listings: list[dict]) -> tuple[int, int]:
 
 
 def run_source(config: dict) -> None:
-    x_valkey.clear_memo()
+    xvalkey.clear_memo()
     pages = handlers.fetch(config)
     for url, body in pages:
         store.save_raw(url_hash(url), body)
