@@ -49,6 +49,14 @@ ufw allow 80/tcp
 ufw --force enable
 ```
 
+Resume PDF rendering (WeasyPrint) needs the pango, cairo, and gdk-pixbuf
+system libraries in the backend container. The provided Dockerfile already
+pulls them in via `playwright install --with-deps`; on any other install run:
+
+```bash
+apt-get install -y libpango-1.0-0 libpangoft2-1.0-0 libcairo2 libgdk-pixbuf-2.0-0
+```
+
 Put runtime secrets into `/opt/jbparser/.env` (never committed to git):
 
 ```

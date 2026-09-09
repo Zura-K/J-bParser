@@ -12,6 +12,17 @@ class Quotas:
 
 
 def limits_for(tier: str) -> Quotas:
+    # TEMPORARY: tiers are ignored — every visitor gets full access so the
+    # whole site is usable while debugging. Delete this early return to
+    # restore the real per-tier quotas below.
+    return Quotas(
+        delay_hours=0,
+        max_profiles=10,
+        max_results=200,
+        profile_embeds_per_day=200,
+        llm_reasons=True,
+        record_ttl_seconds=None,
+    )
     match tier:
         case "Paid":
             return Quotas(

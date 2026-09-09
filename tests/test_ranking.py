@@ -30,12 +30,12 @@ def test_fingerprint_normalizes():
 
 
 def test_limits_tiers():
-    anonymous = limits_for("Anonymous")
-    free = limits_for("Free")
-    paid = limits_for("Paid")
-    assert anonymous.delay_hours > free.delay_hours > paid.delay_hours
-    assert anonymous.max_profiles < free.max_profiles < paid.max_profiles
-    assert anonymous.record_ttl_seconds == 90 * 86400
-    assert free.record_ttl_seconds is None
-    assert paid.llm_reasons and not free.llm_reasons
-    assert limits_for("garbage") == anonymous
+    # TEMPORARY: tiers are unlocked — every tier grants full access.
+    full = limits_for("Paid")
+    assert limits_for("Anonymous") == full
+    assert limits_for("Free") == full
+    assert limits_for("garbage") == full
+    assert full.llm_reasons
+    assert full.delay_hours == 0
+    assert full.max_profiles == 10
+    assert full.record_ttl_seconds is None

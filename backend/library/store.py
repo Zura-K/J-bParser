@@ -7,6 +7,7 @@ from library.valkey import xvalkey
 
 listing_ttl_seconds = 30 * 86400
 raw_ttl_seconds = 3 * 86400
+resume_ttl_seconds = 86400
 
 
 def save_listing(listing_id: str, fields: dict) -> None:
@@ -189,6 +190,40 @@ def list_profiles(user_id: str) -> dict[str, dict]:
 
 def delete_profile(user_id: str, profile_id: str) -> None:
     xvalkey.delete(keys.profile(user_id, profile_id))
+
+
+def save_master_profile(user_id: str, profile: dict) -> None:
+    xvalkey.set_collection(keys.master_profile(user_id), profile)
+
+
+def load_master_profile(user_id: str) -> dict | None:
+    return xvalkey.get_collection(keys.master_profile(user_id))
+
+
+def save_resume(user_id: str, vacancy_id: str, resume: dict) -> None:
+    xvalkey.set_collection(
+        keys.resume_json(user_id, vacancy_id), resume, resume_ttl_seconds
+    )
+
+
+def load_resume(user_id: str, vacancy_id: str) -> dict | None:
+    return xvalkey.get_collection(keys.resume_json(user_id, vacancy_id))
+
+
+def save_resume_pdf(user_id: str, vacancy_id: str, blob: bytes) -> None:
+    xvalkey.set_bytes(keys.resume_pdf(user_id, vacancy_id), blob, resume_ttl_seconds)
+
+
+def load_resume_pdf(user_id: str, vacancy_id: str) -> bytes | None:
+    return xvalkey.get_bytes(keys.resume_pdf(user_id, vacancy_id))
+
+
+def save_resume_png(user_id: str, vacancy_id: str, blob: bytes) -> None:
+    xvalkey.set_bytes(keys.resume_png(user_id, vacancy_id), blob, resume_ttl_seconds)
+
+
+def load_resume_png(user_id: str, vacancy_id: str) -> bytes | None:
+    return xvalkey.get_bytes(keys.resume_png(user_id, vacancy_id))
 
 
 def mark_dismissed(

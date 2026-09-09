@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @page {
+        size: A4;
+        margin: 22mm 20mm;
+      }
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        color: #1a1a1a;
+        font-size: 10.5pt;
+        line-height: 1.45;
+      }
+      h1 {
+        margin: 0;
+        font-size: 22pt;
+        letter-spacing: -0.01em;
+      }
+      .title {
+        margin: 2pt 0 0;
+        font-size: 12pt;
+        color: #555;
+      }
+      .contact {
+        margin: 6pt 0 0;
+        font-size: 9pt;
+        color: #666;
+      }
+      .contact span:not(:last-child)::after {
+        content: "  ·  ";
+        color: #bbb;
+      }
+      h2 {
+        margin: 18pt 0 6pt;
+        font-size: 10.5pt;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #333;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 3pt;
+      }
+      .summary {
+        margin: 4pt 0 0;
+      }
+      .role {
+        margin-top: 10pt;
+      }
+      .role-head {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+      }
+      .role-company {
+        color: #444;
+        font-weight: 400;
+      }
+      .dates {
+        color: #777;
+        font-size: 9pt;
+        white-space: nowrap;
+      }
+      ul {
+        margin: 4pt 0 0;
+        padding-left: 16pt;
+      }
+      li {
+        margin: 2pt 0;
+      }
+      .skills {
+        margin: 4pt 0 0;
+      }
+      .skill {
+        display: inline-block;
+        background: #f0f0f2;
+        border-radius: 4pt;
+        padding: 1pt 6pt;
+        margin: 2pt 3pt 0 0;
+        font-size: 9pt;
+      }
+      .edu {
+        margin-top: 4pt;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>{{ full_name }}</h1>
+      {% if title %}<p class="title">{{ title }}</p>{% endif %}
+      {% if contact %}
+        <p class="contact">
+          {% for value in contact.values() %}<span>{{ value }}</span>{% endfor %}
+        </p>
+      {% endif %}
+    </header>
+
+    {% if summary %}
+      <h2>Summary</h2>
+      <p class="summary">{{ summary }}</p>
+    {% endif %}
+
+    {% if experience %}
+      <h2>Experience</h2>
+      {% for entry in experience %}
+        <div class="role">
+          <div class="role-head">
+            <span>{{ entry.role }}<span class="role-company"> — {{ entry.company }}</span></span>
+            <span class="dates">{{ entry.start }}{% if entry.end %} – {{ entry.end }}{% endif %}</span>
+          </div>
+          {% if entry.bullets %}
+            <ul>
+              {% for bullet in entry.bullets %}<li>{{ bullet.text }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {% if skills %}
+      <h2>Skills</h2>
+      <div class="skills">
+        {% for skill in skills %}<span class="skill">{{ skill }}</span>{% endfor %}
+      </div>
+    {% endif %}
+
+    {% if education %}
+      <h2>Education</h2>
+      {% for item in education %}
+        <p class="edu">
+          {% for value in item.values() %}{{ value }}{% if not loop.last %} — {% endif %}{% endfor %}
+        </p>
+      {% endfor %}
+    {% endif %}
+  </body>
+</html>

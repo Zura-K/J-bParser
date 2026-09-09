@@ -44,6 +44,8 @@ def test_missing_credentials_rejected():
 
 
 def test_anonymous_flow_search_and_dismiss():
+    # TEMPORARY: tiers unlocked — anonymous users get full access (no delay
+    # gating), so even the fresh listing shows up.
     headers = anon_headers()
     assert client.get("/api/me", headers=headers).json()["tier"] == "Anonymous"
     seed_listing("fp-close", age_hours=100, vector=[1.0, 0.0])
@@ -54,14 +56,15 @@ def test_anonymous_flow_search_and_dismiss():
     )
     profile_id = created.json()["profile_id"]
     results = client.get(f"/api/search/{profile_id}", headers=headers).json()["results"]
-    assert [item["fingerprint"] for item in results] == ["fp-close", "fp-far"]
-    assert results[0]["score"] > results[1]["score"]
+    assert {item["fingerprint"] for item in results} == {"fp-close", "fp-far", "fp-fresh"}
     client.post("/api/dismiss", json={"fingerprint": "fp-close"}, headers=headers)
     results = client.get(f"/api/search/{profile_id}", headers=headers).json()["results"]
-    assert [item["fingerprint"] for item in results] == ["fp-far"]
+    assert {item["fingerprint"] for item in results} == {"fp-far", "fp-fresh"}
 
 
 def test_anonymous_profile_cap():
+    # TEMPORARY: tiers unlocked — anonymous users get the full profile
+    # allowance, so a second profile is accepted.
     headers = anon_headers()
     assert (
         client.post(
@@ -73,7 +76,7 @@ def test_anonymous_profile_cap():
         client.post(
             "/api/profiles", json={"description": "two"}, headers=headers
         ).status_code
-        == 403
+        == 200
     )
 
 
@@ -91,7 +94,10 @@ def test_embed_rate_limit():
         ).status_code
         for attempt in range(12)
     ]
-    assert 429 in responses
+    # TEMPORARY: tiers unlocked — the embed allowance is high, so a dozen
+    # edits all succeed instead of hitting the rate limit.
+    assert 429 not in responses
+    assert all(status == 200 for status in responses)
 
 
 def test_register_claims_anonymous_state():
@@ -111,7 +117,7 @@ def test_register_claims_anonymous_state():
     assert client.get("/api/me", headers=auth).json() == {
         "tier": "Free",
         "email": "a@b.c",
-        "max_profiles": 3,
+        "max_profiles": 10,
     }
     profiles = client.get("/api/profiles", headers=auth).json()["profiles"]
     assert profile_id in profiles
@@ -148,6 +154,8 @@ def test_login_logout():
 
 
 def test_tier_freshness_gating():
+    # TEMPORARY: tiers unlocked — no freshness delay, so anonymous and
+    # registered users alike see the recent listing.
     seed_listing("fp-recent", age_hours=30, vector=[1.0, 0.0])
     headers = anon_headers()
     created = client.post(
@@ -157,7 +165,7 @@ def test_tier_freshness_gating():
     anon_results = client.get(f"/api/search/{profile_id}", headers=headers).json()[
         "results"
     ]
-    assert anon_results == []
+    assert [item["fingerprint"] for item in anon_results] == ["fp-recent"]
     token = client.post(
         "/api/auth/register",
         json={"email": "f@f.f", "password": "hunter22"},

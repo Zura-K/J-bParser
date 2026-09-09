@@ -167,6 +167,45 @@
   background: var(--Surface2);
 }
 
+.ResumeCell {
+  white-space: nowrap;
+}
+
+.ResumeButton {
+  background: var(--Surface2);
+  border: 1px solid var(--Border);
+  border-radius: 6px;
+  color: var(--Text);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  margin-right: 6px;
+}
+
+.ResumeButton:hover:enabled {
+  color: var(--Accent);
+}
+
+.ResumeButton:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ResumeNote {
+  color: var(--Muted);
+  font-size: 12.5px;
+}
+
+.ResumePreview {
+  display: block;
+  margin-top: 18px;
+  max-width: 420px;
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+}
+
 .Empty {
   color: var(--Muted);
   font-size: 13.5px;

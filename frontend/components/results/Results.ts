@@ -1,6 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createElement, useState } from "react"
-import { ApiFetch, type ProfileFields, type SearchResult } from "../../library/ts/Api"
+import {
+  ApiFetch,
+  FetchResumePdf,
+  FetchResumePreview,
+  TailorResume,
+  type ProfileFields,
+  type SearchResult,
+} from "../../library/ts/Api"
 import { ResultsTemplate } from "./ResultsTemplate"
 
 export type ResultsState = {
@@ -15,6 +22,12 @@ export type ResultsState = {
   RunPending: boolean
   RunSources: () => void
   Dismiss: (Fingerprint: string) => void
+  TailorResume: (Fingerprint: string) => void
+  TailorPending: boolean
+  TailoredFor: string
+  ResumeNote: string
+  ResumePreviewUrl: string
+  DownloadResumePdf: (Fingerprint: string) => void
 }
 
 function UseResultsState(): ResultsState {
@@ -48,6 +61,42 @@ function UseResultsState(): ResultsState {
       ApiFetch("/api/dismiss", "POST", { fingerprint: Fingerprint }),
     onSuccess: () => Cache.invalidateQueries({ queryKey: ["search"] }),
   })
+  const [TailoredFor, SetTailoredFor] = useState("")
+  const [ResumeNote, SetResumeNote] = useState("")
+  const [ResumePreviewUrl, SetResumePreviewUrl] = useState("")
+  const Tailor = useMutation({
+    mutationFn: (Fingerprint: string) => TailorResume(Fingerprint),
+    onSuccess: async (Reply, Fingerprint) => {
+      SetTailoredFor(Fingerprint)
+      const Missing = Reply.coverage.missing
+      SetResumeNote(
+        `Skill coverage ${Reply.coverage.score}%` +
+          (Missing.length > 0 ? ` — missing: ${Missing.join(", ")}` : ""),
+      )
+      const Preview = await FetchResumePreview(Fingerprint)
+      SetResumePreviewUrl((Old) => {
+        if (Old) {
+          URL.revokeObjectURL(Old)
+        }
+        return URL.createObjectURL(Preview)
+      })
+    },
+    onError: (Caught) =>
+      SetResumeNote(Caught instanceof Error ? Caught.message : String(Caught)),
+  })
+  const DownloadResumePdf = async (Fingerprint: string) => {
+    try {
+      const Pdf = await FetchResumePdf(Fingerprint)
+      const Url = URL.createObjectURL(Pdf)
+      const Anchor = document.createElement("a")
+      Anchor.href = Url
+      Anchor.download = `resume-${Fingerprint}.pdf`
+      Anchor.click()
+      URL.revokeObjectURL(Url)
+    } catch (Caught) {
+      SetResumeNote(Caught instanceof Error ? Caught.message : String(Caught))
+    }
+  }
   return {
     NoProfilesYet: ProfilesQuery.isSuccess && ProfileIds.length === 0,
     ProfileOptions: ProfileIds.map((ProfileId) => ({
@@ -63,6 +112,12 @@ function UseResultsState(): ResultsState {
     RunPending: RunSources.isPending,
     RunSources: () => RunSources.mutate(),
     Dismiss: (Fingerprint) => Dismiss.mutate(Fingerprint),
+    TailorResume: (Fingerprint) => Tailor.mutate(Fingerprint),
+    TailorPending: Tailor.isPending,
+    TailoredFor,
+    ResumeNote,
+    ResumePreviewUrl,
+    DownloadResumePdf,
   }
 }
 

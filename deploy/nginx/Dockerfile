@@ -3,7 +3,9 @@ FROM node:22-alpine AS build
 
 WORKDIR /build
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
+# package-lock.json is authored with npm 11; node:22-alpine ships npm 10, whose
+# lock format is incompatible, so upgrade before installing.
+RUN npm install -g npm@11 && npm ci
 COPY frontend ./
 RUN npm run build
 

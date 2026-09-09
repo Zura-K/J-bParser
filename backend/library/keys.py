@@ -41,3 +41,51 @@ def queue_processing(worker_id: str) -> str:
 
 def embed_count(user_id: str) -> str:
     return f"EmbedCount:{user_id}"
+
+
+def master_profile(user_id: str) -> str:
+    return f"profile:{user_id}"
+
+
+def resume_json(user_id: str, vacancy_id: str) -> str:
+    return f"resume:{user_id}:{vacancy_id}"
+
+
+def resume_pdf(user_id: str, vacancy_id: str) -> str:
+    return f"pdf:{user_id}:{vacancy_id}"
+
+
+def resume_png(user_id: str, vacancy_id: str) -> str:
+    return f"png:{user_id}:{vacancy_id}"
+
+
+def master_profile(user_id: str) -> str:
+    return f"profile:{user_id}"
+
+
+def resume_json(user_id: str, vacancy_id: str) -> str:
+    return f"resume:{user_id}:{vacancy_id}"
+
+
+def resume_pdf(user_id: str, vacancy_id: str) -> str:
+    return f"pdf:{user_id}:{vacancy_id}"
+
+
+def resume_png(user_id: str, vacancy_id: str) -> str:
+    return f"png:{user_id}:{vacancy_id}"
+
+
+def master_profile(user_id: str) -> str:
+    return f"profile:{user_id}"
+
+
+def resume_json(user_id: str, vacancy_id: str) -> str:
+    return f"resume:{user_id}:{vacancy_id}"
+
+
+def resume_pdf(user_id: str, vacancy_id: str) -> str:
+    return f"pdf:{user_id}:{vacancy_id}"
+
+
+def resume_png(user_id: str, vacancy_id: str) -> str:
+    return f"png:{user_id}:{vacancy_id}"

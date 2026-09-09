@@ -10,6 +10,15 @@ session_ttl_seconds = 30 * 86400
 anon_id_pattern = re.compile(r"[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}")
 
 
+# TEMPORARY debug switch: any request carrying the x-admin header (the
+# frontend sets it after visiting /?admin=1) is upgraded to the Paid tier.
+# Remove this block and its callers when the debugging session is done.
+def grant_admin(user_id: str) -> None:
+    user = store.load_user(user_id)
+    if user is not None and user.get("tier") != "Paid":
+        store.save_user(user_id, {"tier": "Paid"})
+
+
 def touch_user(user_id: str) -> dict | None:
     user = store.load_user(user_id)
     if user is None:
@@ -24,7 +33,15 @@ def touch_user(user_id: str) -> dict | None:
 def resolve_user_id(
     authorization: str | None = Header(default=None),
     x_anon_id: str | None = Header(default=None),
+    x_admin: str | None = Header(default=None),
 ) -> str:
+    user_id = _identify(authorization, x_anon_id)
+    if x_admin == "1":
+        grant_admin(user_id)
+    return user_id
+
+
+def _identify(authorization: str | None, x_anon_id: str | None) -> str:
     if authorization is not None and authorization.startswith("Bearer "):
         user_id = store.load_session(authorization.removeprefix("Bearer "))
         if user_id is None:

@@ -42,6 +42,7 @@ export function ResultsTemplate(Props: ResultsState) {
         {Props.RunNote !== "" && <span className={Styles.RunNote}>{Props.RunNote}</span>}
       </div>
       {Props.SearchError !== "" && <p className={Styles.Error}>{Props.SearchError}</p>}
+      {Props.ResumeNote !== "" && <p className={Styles.ResumeNote}>{Props.ResumeNote}</p>}
       <div className={Styles.Card}>
         <table className={Styles.Table}>
           <thead>
@@ -51,6 +52,7 @@ export function ResultsTemplate(Props: ResultsState) {
               <th>Location</th>
               <th>Age</th>
               <th>Why it matches</th>
+              <th>Resume</th>
               <th></th>
             </tr>
           </thead>
@@ -75,6 +77,23 @@ export function ResultsTemplate(Props: ResultsState) {
                 <td className={Styles.Muted}>{Row.location}</td>
                 <td className={Styles.Mono}>{Age(Row.posted_at)}</td>
                 <td className={Styles.Reason}>{Row.reason}</td>
+                <td className={Styles.ResumeCell}>
+                  <button
+                    className={Styles.ResumeButton}
+                    onClick={() => Props.TailorResume(Row.fingerprint)}
+                    disabled={Props.TailorPending}
+                  >
+                    {Props.TailorPending ? "…" : "Tailor"}
+                  </button>
+                  {Props.TailoredFor === Row.fingerprint && (
+                    <button
+                      className={Styles.ResumeButton}
+                      onClick={() => Props.DownloadResumePdf(Row.fingerprint)}
+                    >
+                      PDF
+                    </button>
+                  )}
+                </td>
                 <td className={Styles.DismissCell}>
                   <button
                     className={Styles.DismissButton}
@@ -89,6 +108,13 @@ export function ResultsTemplate(Props: ResultsState) {
           </tbody>
         </table>
       </div>
+      {Props.ResumePreviewUrl !== "" && (
+        <img
+          className={Styles.ResumePreview}
+          src={Props.ResumePreviewUrl}
+          alt="Tailored resume preview"
+        />
+      )}
     </div>
   )
 }

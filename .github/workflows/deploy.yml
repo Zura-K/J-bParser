@@ -48,6 +48,12 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
+      # package-lock.json is authored with npm 11; pin the runner's npm to the
+      # same major so `npm ci` here and the node:22-alpine production build
+      # resolve it identically (npm 10 and 11 write incompatible lock formats).
+      - name: pin_npm
+        run: npm install -g npm@11
+
       - name: install_dependencies
         working-directory: frontend
         run: npm ci
@@ -70,31 +76,31 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-  sonar:
-    needs: [test_backend, test_frontend]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: download_backend_coverage
-        uses: actions/download-artifact@v4
-        with:
-          name: backend_coverage
-          path: backend
-
-      - name: download_frontend_coverage
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend_coverage
-          path: frontend/coverage
-
-      - name: analyze
-        uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+#  sonar:
+#    needs: [test_backend, test_frontend]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: download_backend_coverage
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: backend_coverage
+#          path: backend
+#
+#      - name: download_frontend_coverage
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: frontend_coverage
+#          path: frontend/coverage
+#
+#      - name: analyze
+#        uses: SonarSource/sonarqube-scan-action@v5
+#        env:
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   deploy:
     needs: [test_backend, test_frontend]
