@@ -120,7 +120,7 @@ jobs:
           printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           # A key ssh-keygen cannot derive a public key from would fail later
-          # with an opaque libcrypto error — reject it here with a clear cause.
+          # with an opaque libcrypto error - reject it here with a clear cause.
           if ! ssh-keygen -y -P "" -f ~/.ssh/id_ed25519 > /dev/null; then
             echo "::error::DEPLOY_SSH_KEY is not a valid UNENCRYPTED private key." >&2
             echo "Regenerate with: ssh-keygen -t ed25519 -f deploy_key -N \"\"" >&2
@@ -129,17 +129,70 @@ jobs:
           fi
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
+      # rsync creates only the final path component, so a wiped or first-time
+      # server fails on the missing parent. Create the whole tree up front.
+      # The compose run passes --env-file, which errors out if the path does
+      # not exist, so make sure the file is there - empty is fine, and touch
+      # leaves a populated one untouched.
+      - name: ensure_remote_directories
+        run: |
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "
+            set -e
+            mkdir -p '$DEPLOY_PATH'
+            touch /opt/jbparser/.env
+          "
+
       - name: sync_sources_to_server
         run: |
-          rsync -az --delete --exclude '.git' ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+          # Stamp the commit into the tree BEFORE transferring it. The marker
+          # travels with the sources, so reading it back over ssh proves the
+          # rsync landed in the directory compose actually builds from - and
+          # catches an older queued run overwriting a newer one.
+          echo "${{ github.sha }}" > RELEASE_SHA
+          rsync -az --delete --stats --exclude '.git' \
+            --rsync-path="mkdir -p '$DEPLOY_PATH' && rsync" \
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
 
       - name: build_and_restart_containers
         run: |
           # Keepalives stop NATs/firewalls from dropping the connection during
           # long silent phases (exporting multi-GB image layers).
-          ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=60 "$DEPLOY_USER@$DEPLOY_HOST" "
-            set -e
-            cd '$DEPLOY_PATH/deploy'
-            docker compose --env-file /opt/jbparser/.env up -d --build --force-recreate --remove-orphans
-            docker image prune -f
-          "
+          ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=60 \
+              "$DEPLOY_USER@$DEPLOY_HOST" \
+              "DEPLOY_PATH='$DEPLOY_PATH' EXPECTED_SHA='${{ github.sha }}' bash -s" <<'REMOTE'
+          set -euo pipefail
+
+          cd "$DEPLOY_PATH/deploy"
+          compose="docker compose --env-file /opt/jbparser/.env"
+
+          landed_sha=$(cat "$DEPLOY_PATH/RELEASE_SHA" 2>/dev/null || echo "MISSING")
+          echo "expected_sha=$EXPECTED_SHA landed_sha=$landed_sha"
+          if [ "$landed_sha" != "$EXPECTED_SHA" ]; then
+            echo "::error::sources on the server are not this commit - rsync went to the wrong path, or an older queued run finished last" >&2
+            exit 1
+          fi
+
+          images_before=$($compose images --quiet | sort -u || true)
+
+          $compose up -d --build --force-recreate --remove-orphans
+          docker image prune -f
+
+          images_after=$($compose images --quiet | sort -u || true)
+          echo "--- service image ids before ---"
+          echo "$images_before"
+          echo "--- service image ids after ----"
+          echo "$images_after"
+          if [ "$images_before" = "$images_after" ]; then
+            echo "::warning::no service image changed - either this commit touched nothing inside any build context, or the build context / .dockerignore / Dockerfile is not picking up the synced sources"
+          fi
+
+          # `up -d` exits 0 the moment containers are started; one that dies a
+          # second later leaves the old version reachable behind the proxy.
+          $compose ps
+          dead=$($compose ps --quiet --status created --status exited --status restarting --status paused --status dead | wc -l)
+          if [ "$dead" -ne 0 ]; then
+            $compose logs --tail 100
+            echo "::error::$dead container(s) are not running after deploy" >&2
+            exit 1
+          fi
+          REMOTE
