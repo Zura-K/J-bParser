@@ -107,8 +107,26 @@ def rewrite_summary(profile: dict, vacancy: dict) -> dict:
 def render_pdf(resume_data: dict, template_name: str) -> bytes:
     import weasyprint
 
-    html = template_env.get_template(f"{template_name}.html").render(resume_data)
+    html = template_env.get_template(f"{template_name}.html").render(
+        _template_view(resume_data)
+    )
     return weasyprint.HTML(string=html).write_pdf()
+
+
+def _template_view(resume_data: dict) -> dict:
+    experience = []
+    for entry in resume_data.get("experience", []):
+        job = {
+            **entry,
+            "bullets": [
+                bullet.get("text", "") if isinstance(bullet, dict) else bullet
+                for bullet in entry.get("bullets", [])
+            ],
+        }
+        if not job.get("end"):
+            job.pop("end", None)
+        experience.append(job)
+    return {**resume_data, "experience": experience}
 
 
 def pdf_first_page_png(pdf_blob: bytes) -> bytes:

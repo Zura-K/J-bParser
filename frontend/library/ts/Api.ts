@@ -176,6 +176,12 @@ export type ResumeExperience = {
   bullets: ResumeBullet[]
 }
 
+export type ResumeEducation = {
+  institution: string
+  degree: string
+  year: string
+}
+
 export type MasterProfile = {
   full_name: string
   title: string
@@ -183,7 +189,7 @@ export type MasterProfile = {
   summary: string
   experience: ResumeExperience[]
   skills: string[]
-  education: Record<string, string>[]
+  education: ResumeEducation[]
 }
 
 export type ResumeCoverage = {

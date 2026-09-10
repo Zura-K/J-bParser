@@ -18,8 +18,36 @@
   font-size: 13px;
 }
 
-.ProfilePicker {
+.RunButton {
   margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--Accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--AccentInk);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 9px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.RunGlyph {
+  font-size: 12px;
+}
+
+.RunButton:hover:enabled {
+  filter: brightness(1.08);
+}
+
+.RunButton:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ProfilePicker {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -35,26 +63,6 @@
   font-size: 13.5px;
   padding: 7px 10px;
   cursor: pointer;
-}
-
-.RunButton {
-  background: var(--Accent);
-  border: none;
-  border-radius: 8px;
-  color: var(--AccentInk);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 14px;
-  cursor: pointer;
-}
-
-.RunButton:hover:enabled {
-  filter: brightness(1.08);
-}
-
-.RunButton:disabled {
-  opacity: 0.6;
-  cursor: default;
 }
 
 .RunNote {
@@ -105,11 +113,24 @@
   display: inline-block;
   font-family: "JetBrains Mono", monospace;
   font-size: 12.5px;
-  font-weight: 500;
-  color: var(--Accent);
-  background: var(--AccentSoft);
+  font-weight: 600;
   border-radius: 6px;
   padding: 2px 8px;
+}
+
+.ScoreGood {
+  color: var(--Good);
+  background: var(--GoodSoft);
+}
+
+.ScoreWarn {
+  color: var(--Warn);
+  background: var(--WarnSoft);
+}
+
+.ScoreBad {
+  color: var(--Bad);
+  background: var(--BadSoft);
 }
 
 .Link {
@@ -147,6 +168,27 @@
   line-height: 1.45;
 }
 
+.TailorCell {
+  padding: 10px 6px;
+  white-space: nowrap;
+}
+
+.TailorButton {
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 6px;
+  color: var(--Text);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+}
+
+.TailorButton:hover {
+  color: var(--Accent);
+  border-color: var(--Accent);
+}
+
 .DismissCell {
   padding: 10px;
 }
@@ -165,45 +207,6 @@
 .DismissButton:hover {
   color: var(--Bad);
   background: var(--Surface2);
-}
-
-.ResumeCell {
-  white-space: nowrap;
-}
-
-.ResumeButton {
-  background: var(--Surface2);
-  border: 1px solid var(--Border);
-  border-radius: 6px;
-  color: var(--Text);
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 10px;
-  margin-right: 6px;
-}
-
-.ResumeButton:hover:enabled {
-  color: var(--Accent);
-}
-
-.ResumeButton:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-
-.ResumeNote {
-  color: var(--Muted);
-  font-size: 12.5px;
-}
-
-.ResumePreview {
-  display: block;
-  margin-top: 18px;
-  max-width: 420px;
-  border: 1px solid var(--Border);
-  border-radius: 12px;
-  box-shadow: var(--Shadow);
 }
 
 .Empty {

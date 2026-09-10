@@ -2,22 +2,26 @@ import { Auth } from "../components/auth/Auth"
 import { Landing } from "../components/landing/Landing"
 import { Profiles } from "../components/profiles/Profiles"
 import { Results } from "../components/results/Results"
+import { Resume } from "../components/resume/Resume"
 import { Sources } from "../components/sources/Sources"
-import type { AppState, Tab } from "./App"
+import type { AppState } from "./App"
 import Styles from "./App.module.css"
 
 const NavTabs = [
   { Id: "results", Label: "Results" },
   { Id: "profiles", Label: "Profiles" },
+  { Id: "resume", Label: "Resume" },
   { Id: "sources", Label: "Sources" },
 ] as const
 
-function ActivePanel(Props: { Tab: Tab }) {
-  switch (Props.Tab) {
+function ActivePanel(Props: AppState) {
+  switch (Props.ActiveTab) {
     case "results":
-      return <Results />
+      return <Results OnTailor={Props.OpenResume} />
     case "profiles":
       return <Profiles />
+    case "resume":
+      return <Resume InitialVacancy={Props.TailorVacancy} />
     case "sources":
       return <Sources />
     case "account":
@@ -67,7 +71,7 @@ export function AppTemplate(Props: AppState) {
         </div>
       </header>
       <main className={Styles.Main}>
-        <ActivePanel Tab={Props.ActiveTab} />
+        <ActivePanel {...Props} />
       </main>
     </div>
   )

@@ -1,0 +1,774 @@
+.Bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.Title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.Status {
+  color: var(--Muted);
+  font-size: 13px;
+}
+
+.SaveButton {
+  background: var(--Accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--AccentInk);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+.SaveButton:hover:enabled {
+  filter: brightness(1.08);
+}
+
+.SaveButton:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.Picker {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--Muted);
+  font-size: 13px;
+}
+
+.Select {
+  background: var(--Surface);
+  color: var(--Text);
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  font-size: 13.5px;
+  padding: 7px 10px;
+  cursor: pointer;
+  max-width: 320px;
+}
+
+.Grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.Editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.Side {
+  position: sticky;
+  top: 76px;
+  min-width: 0;
+}
+
+.Stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.Card,
+.Panel {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+  padding: 18px 20px;
+}
+
+.Panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.PanelTight {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+  overflow: hidden;
+}
+
+.CardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.SectionLabel {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--Muted);
+}
+
+.CardHead .SectionLabel {
+  margin-bottom: 0;
+}
+
+.Mono {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11.5px;
+  color: var(--Muted);
+}
+
+.Input,
+.InputStrong,
+.InputMono,
+.TextArea,
+.BulletText {
+  min-width: 0;
+  box-sizing: border-box;
+  background: var(--Bg);
+  color: var(--Text);
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13.5px;
+}
+
+.InputStrong {
+  font-weight: 600;
+}
+
+.InputMono {
+  color: var(--Muted);
+  font-size: 12.5px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.TextArea {
+  width: 100%;
+  padding: 10px 12px;
+  line-height: 1.5;
+}
+
+.BulletText {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.Input:focus,
+.InputStrong:focus,
+.InputMono:focus,
+.TextArea:focus,
+.BulletText:focus,
+.TagDraft:focus,
+.TagDraftCompact:focus {
+  outline: none;
+  border-color: var(--Accent);
+  border-style: solid;
+}
+
+.IdentityGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.IdentityGrid > :first-child {
+  grid-column: 1 / -1;
+}
+
+.Roles {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.Role {
+  border-top: 1px solid var(--Border);
+  padding-top: 14px;
+}
+
+.RoleGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.Bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.BulletRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px 28px;
+  gap: 8px;
+  align-items: start;
+}
+
+.BulletTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-content: flex-start;
+}
+
+.Tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--AccentSoft);
+  color: var(--Accent);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.TagRemove {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.TagRemove:hover {
+  opacity: 1;
+  color: var(--Bad);
+}
+
+.TagDraft,
+.TagDraftCompact {
+  min-width: 0;
+  background: var(--Bg);
+  color: var(--Text);
+  border: 1px dashed var(--Border);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12.5px;
+}
+
+.TagDraft {
+  flex: 1;
+  min-width: 160px;
+}
+
+.TagDraftCompact {
+  width: 64px;
+  background: none;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 11.5px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.IconButton {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--Muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 6px 4px;
+  line-height: 1;
+}
+
+.IconButton:hover {
+  color: var(--Bad);
+  background: var(--Surface2);
+}
+
+.RoleFoot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.LinkButton,
+.LinkButtonMuted {
+  background: none;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.LinkButton {
+  color: var(--Accent);
+}
+
+.LinkButtonMuted {
+  color: var(--Muted);
+}
+
+.LinkButton:hover {
+  text-decoration: underline;
+}
+
+.LinkButtonMuted:hover {
+  color: var(--Bad);
+}
+
+.SmallButton {
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Text);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.SmallButton:hover {
+  border-color: var(--Muted);
+}
+
+.SkillTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.SkillTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--Surface2);
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.EducationRows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.EducationGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 72px 28px;
+  gap: 8px;
+  align-items: center;
+}
+
+.EmptyPanel {
+  background: var(--Surface);
+  border: 1px dashed var(--Border);
+  border-radius: 12px;
+  padding: 56px 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.EmptyGlyph {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--AccentSoft);
+  color: var(--Accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.EmptyTitle {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.EmptyBody {
+  margin: 0;
+  color: var(--Muted);
+  font-size: 13.5px;
+  max-width: 360px;
+  text-wrap: pretty;
+}
+
+.PrimaryButton {
+  margin-top: 8px;
+  background: var(--Accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--AccentInk);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.PrimaryButton:hover:enabled {
+  filter: brightness(1.08);
+}
+
+.PrimaryButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.SecondaryButton {
+  margin-top: 8px;
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Text);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.SecondaryButton:hover {
+  border-color: var(--Muted);
+}
+
+.Actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.Actions .PrimaryButton,
+.Actions .SecondaryButton {
+  margin-top: 0;
+}
+
+.LoadingHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.Spinner {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 50%;
+  border: 4px solid var(--Border);
+  border-top-color: var(--Accent);
+  animation: Spin 1s linear infinite;
+}
+
+.LoadingTitle {
+  font-weight: 600;
+}
+
+.LoadingSub {
+  color: var(--Muted);
+  font-size: 13px;
+}
+
+.ShimmerLine {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--Surface2);
+  animation: Shimmer 1.2s ease-in-out infinite;
+}
+
+.ShimmerPage {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 210 / 297;
+  max-height: 360px;
+  border-radius: 8px;
+  background: var(--Surface2);
+  animation: Shimmer 1.2s ease-in-out infinite;
+}
+
+.CoverageHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.CoverageMain {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 240px;
+}
+
+.Ring {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.RingInner {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--Surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.CoverageText {
+  min-width: 0;
+}
+
+.CoverageText .SectionLabel {
+  margin-bottom: 0;
+}
+
+.CoverageVacancy {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.CoverageSub {
+  color: var(--Muted);
+  font-size: 12.5px;
+}
+
+.SkillColumns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 2px;
+}
+
+.SkillHeading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.SkillHeadingGood {
+  color: var(--Good);
+}
+
+.SkillHeadingBad {
+  color: var(--Bad);
+}
+
+.Dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.Chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.Chip {
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.ChipGood {
+  background: var(--GoodSoft);
+  color: var(--Good);
+}
+
+.ChipBad {
+  background: var(--BadSoft);
+  color: var(--Bad);
+}
+
+.ErrorText {
+  margin: 0;
+  color: var(--Bad);
+  font-size: 13px;
+}
+
+.ViewBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--Border);
+}
+
+.Segment {
+  display: inline-flex;
+  background: var(--Surface2);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.SegmentButton,
+.SegmentActive {
+  background: transparent;
+  color: var(--Muted);
+  border: none;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+.SegmentActive {
+  background: var(--Surface);
+  color: var(--Text);
+  box-shadow: var(--Shadow);
+}
+
+.ViewMeta {
+  margin-left: auto;
+  color: var(--Muted);
+  font-size: 12px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.PreviewWrap {
+  padding: 20px;
+  background: var(--Surface2);
+  display: flex;
+  justify-content: center;
+}
+
+.PreviewPage {
+  width: 100%;
+  max-width: 420px;
+  display: block;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.DiffScroll {
+  overflow-x: auto;
+}
+
+.DiffTable {
+  min-width: 560px;
+}
+
+.DiffHeader,
+.DiffRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--Border);
+}
+
+.DiffHeaderLeft,
+.DiffHeaderRight {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.DiffHeaderLeft {
+  color: var(--Muted);
+  border-right: 1px solid var(--Border);
+}
+
+.DiffHeaderRight {
+  color: var(--Accent);
+}
+
+.DiffRow {
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.DiffCell,
+.DiffLeftChanged,
+.DiffRightChanged {
+  padding: 8px 14px;
+  display: flex;
+  gap: 10px;
+  color: var(--Muted);
+}
+
+.DiffCell:first-child,
+.DiffLeftChanged {
+  border-right: 1px solid var(--Border);
+}
+
+.DiffLeftChanged {
+  background: var(--BadSoft);
+  color: var(--Text);
+}
+
+.DiffRightChanged {
+  background: var(--GoodSoft);
+  color: var(--Text);
+}
+
+.DiffMark {
+  flex: none;
+  width: 14px;
+  font-family: "JetBrains Mono", monospace;
+  color: var(--Muted);
+}
+
+.Struck {
+  text-decoration: line-through;
+  text-decoration-color: var(--Bad);
+}
+
+@keyframes Spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes Shimmer {
+  0% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.45;
+  }
+}

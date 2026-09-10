@@ -1,136 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <style>
-      @page {
-        size: A4;
-        margin: 22mm 20mm;
-      }
-      body {
-        font-family: "Helvetica Neue", Arial, sans-serif;
-        color: #1a1a1a;
-        font-size: 10.5pt;
-        line-height: 1.45;
-      }
-      h1 {
-        margin: 0;
-        font-size: 22pt;
-        letter-spacing: -0.01em;
-      }
-      .title {
-        margin: 2pt 0 0;
-        font-size: 12pt;
-        color: #555;
-      }
-      .contact {
-        margin: 6pt 0 0;
-        font-size: 9pt;
-        color: #666;
-      }
-      .contact span:not(:last-child)::after {
-        content: "  ·  ";
-        color: #bbb;
-      }
-      h2 {
-        margin: 18pt 0 6pt;
-        font-size: 10.5pt;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: #333;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 3pt;
-      }
-      .summary {
-        margin: 4pt 0 0;
-      }
-      .role {
-        margin-top: 10pt;
-      }
-      .role-head {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 600;
-      }
-      .role-company {
-        color: #444;
-        font-weight: 400;
-      }
-      .dates {
-        color: #777;
-        font-size: 9pt;
-        white-space: nowrap;
-      }
-      ul {
-        margin: 4pt 0 0;
-        padding-left: 16pt;
-      }
-      li {
-        margin: 2pt 0;
-      }
-      .skills {
-        margin: 4pt 0 0;
-      }
-      .skill {
-        display: inline-block;
-        background: #f0f0f2;
-        border-radius: 4pt;
-        padding: 1pt 6pt;
-        margin: 2pt 3pt 0 0;
-        font-size: 9pt;
-      }
-      .edu {
-        margin-top: 4pt;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>{{ full_name }}</h1>
-      {% if title %}<p class="title">{{ title }}</p>{% endif %}
-      {% if contact %}
-        <p class="contact">
-          {% for value in contact.values() %}<span>{{ value }}</span>{% endfor %}
-        </p>
-      {% endif %}
-    </header>
+<html lang="{{ lang|default('en') }}">
+<head>
+<meta charset="utf-8">
+<title>{{ full_name }} — {{ title }}</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 18mm 20mm 18mm;
+    @bottom-right {
+      content: counter(page) " / " counter(pages);
+      font-family: "Noto Sans", "DejaVu Sans", "Noto Sans Georgian", Arial, sans-serif;
+      font-size: 8.5pt;
+      color: #6b7280;
+    }
+    @bottom-left {
+      content: "{{ full_name }}";
+      font-family: "Noto Sans", "DejaVu Sans", "Noto Sans Georgian", Arial, sans-serif;
+      font-size: 8.5pt;
+      color: #6b7280;
+    }
+  }
+  @page :first {
+    @bottom-left { content: none; }
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans", "DejaVu Sans", "Noto Sans Georgian", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.4;
+    color: #111827;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, p, ul { margin: 0; }
+  ul { padding: 0; list-style: none; }
 
-    {% if summary %}
-      <h2>Summary</h2>
-      <p class="summary">{{ summary }}</p>
-    {% endif %}
+  /* Header */
+  header { margin-bottom: 7mm; }
+  h1 { font-size: 20pt; font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+  .title { font-size: 11.5pt; color: #374151; margin-top: 1mm; }
+  .contact { margin-top: 2.5mm; font-size: 9.5pt; color: #374151; }
+  .contact li { display: inline; }
+  .contact li + li::before { content: "  ·  "; color: #9ca3af; }
+  .contact a { color: inherit; text-decoration: none; }
 
-    {% if experience %}
-      <h2>Experience</h2>
-      {% for entry in experience %}
-        <div class="role">
-          <div class="role-head">
-            <span>{{ entry.role }}<span class="role-company"> — {{ entry.company }}</span></span>
-            <span class="dates">{{ entry.start }}{% if entry.end %} – {{ entry.end }}{% endif %}</span>
-          </div>
-          {% if entry.bullets %}
-            <ul>
-              {% for bullet in entry.bullets %}<li>{{ bullet.text }}</li>{% endfor %}
-            </ul>
-          {% endif %}
-        </div>
-      {% endfor %}
-    {% endif %}
+  /* Sections */
+  section { margin-top: 5.5mm; }
+  h2 {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1f2937;
+    padding-bottom: 1.2mm;
+    margin-bottom: 2.5mm;
+    border-bottom: 0.6pt solid #111827;
+    page-break-after: avoid;
+  }
+  .summary { text-align: left; }
 
-    {% if skills %}
-      <h2>Skills</h2>
-      <div class="skills">
-        {% for skill in skills %}<span class="skill">{{ skill }}</span>{% endfor %}
-      </div>
-    {% endif %}
+  /* Experience */
+  .entry { page-break-inside: avoid; break-inside: avoid; margin-bottom: 3.5mm; }
+  .entry:last-child { margin-bottom: 0; }
+  .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6mm; }
+  h3 { font-size: 10.5pt; font-weight: 700; }
+  .company { font-weight: 400; color: #374151; }
+  .company::before { content: " — "; color: #9ca3af; }
+  .dates { font-size: 9.5pt; color: #4b5563; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .bullets { margin-top: 1.2mm; padding-left: 4mm; }
+  .bullets li { position: relative; margin-bottom: 0.8mm; }
+  .bullets li::before { content: "–"; position: absolute; left: -4mm; color: #4b5563; }
 
-    {% if education %}
-      <h2>Education</h2>
-      {% for item in education %}
-        <p class="edu">
-          {% for value in item.values() %}{{ value }}{% if not loop.last %} — {% endif %}{% endfor %}
-        </p>
-      {% endfor %}
+  /* Skills */
+  .skills { line-height: 1.6; }
+  .skills li { display: inline; }
+  .skills li + li::before { content: ", "; }
+
+  /* Education */
+  .edu { page-break-inside: avoid; break-inside: avoid; display: flex; justify-content: space-between; gap: 6mm; margin-bottom: 1.5mm; }
+  .edu .degree { color: #374151; }
+  .edu .degree::before { content: " — "; color: #9ca3af; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>{{ full_name }}</h1>
+  {% if title %}<p class="title">{{ title }}</p>{% endif %}
+  <ul class="contact">
+    {% if contact.email %}<li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>{% endif %}
+    {% if contact.phone %}<li>{{ contact.phone }}</li>{% endif %}
+    {% if contact.location %}<li>{{ contact.location }}</li>{% endif %}
+    {% for link in contact.links %}<li><a href="{{ link.url|default(link) }}">{{ link.label|default(link) }}</a></li>{% endfor %}
+  </ul>
+</header>
+
+{% if summary %}
+<section>
+  <h2>Summary</h2>
+  <p class="summary">{{ summary }}</p>
+</section>
+{% endif %}
+
+{% if experience %}
+<section>
+  <h2>Experience</h2>
+  {% for job in experience %}
+  <article class="entry">
+    <div class="entry-head">
+      <h3>{{ job.role }}<span class="company">{{ job.company }}</span></h3>
+      <span class="dates">{{ job.start }} – {{ job.end|default('Present') }}</span>
+    </div>
+    {% if job.bullets %}
+    <ul class="bullets">
+      {% for b in job.bullets %}<li>{{ b }}</li>{% endfor %}
+    </ul>
     {% endif %}
-  </body>
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if skills %}
+<section>
+  <h2>Skills</h2>
+  <ul class="skills">
+    {% for s in skills %}<li>{{ s }}</li>{% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if education %}
+<section>
+  <h2>Education</h2>
+  {% for e in education %}
+  <div class="edu">
+    <span><strong>{{ e.institution }}</strong><span class="degree">{{ e.degree }}</span></span>
+    <span class="dates">{{ e.year }}</span>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+</body>
 </html>

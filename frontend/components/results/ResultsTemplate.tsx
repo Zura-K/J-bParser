@@ -1,5 +1,11 @@
-import type { ResultsState } from "./Results"
+import { TierOf, type ResultsState } from "./Results"
 import Styles from "./Results.module.css"
+
+const TierClass = {
+  Good: Styles.ScoreGood,
+  Warn: Styles.ScoreWarn,
+  Bad: Styles.ScoreBad,
+} as const
 
 function Age(PostedAt: number): string {
   if (!PostedAt) {
@@ -18,6 +24,14 @@ export function ResultsTemplate(Props: ResultsState) {
       <div className={Styles.Bar}>
         <h1 className={Styles.Title}>Matches</h1>
         <span className={Styles.Count}>{Props.CountLabel}</span>
+        <button
+          className={Styles.RunButton}
+          onClick={Props.RunSources}
+          disabled={Props.RunPending}
+        >
+          <span className={Styles.RunGlyph}>▸</span>
+          {Props.RunPending ? "Queueing…" : "Run parsing"}
+        </button>
         <label className={Styles.ProfilePicker}>
           Profile
           <select
@@ -32,17 +46,9 @@ export function ResultsTemplate(Props: ResultsState) {
             ))}
           </select>
         </label>
-        <button
-          className={Styles.RunButton}
-          onClick={Props.RunSources}
-          disabled={Props.RunPending}
-        >
-          {Props.RunPending ? "Queueing…" : "Run sources now"}
-        </button>
         {Props.RunNote !== "" && <span className={Styles.RunNote}>{Props.RunNote}</span>}
       </div>
       {Props.SearchError !== "" && <p className={Styles.Error}>{Props.SearchError}</p>}
-      {Props.ResumeNote !== "" && <p className={Styles.ResumeNote}>{Props.ResumeNote}</p>}
       <div className={Styles.Card}>
         <table className={Styles.Table}>
           <thead>
@@ -52,7 +58,7 @@ export function ResultsTemplate(Props: ResultsState) {
               <th>Location</th>
               <th>Age</th>
               <th>Why it matches</th>
-              <th>Resume</th>
+              <th></th>
               <th></th>
             </tr>
           </thead>
@@ -60,7 +66,9 @@ export function ResultsTemplate(Props: ResultsState) {
             {Props.Rows.map((Row) => (
               <tr key={Row.fingerprint}>
                 <td>
-                  <span className={Styles.Score}>{Row.score.toFixed(2)}</span>
+                  <span className={`${Styles.Score} ${TierClass[TierOf(Row.score)]}`}>
+                    {Row.score.toFixed(2)}
+                  </span>
                 </td>
                 <td>
                   <a
@@ -77,22 +85,14 @@ export function ResultsTemplate(Props: ResultsState) {
                 <td className={Styles.Muted}>{Row.location}</td>
                 <td className={Styles.Mono}>{Age(Row.posted_at)}</td>
                 <td className={Styles.Reason}>{Row.reason}</td>
-                <td className={Styles.ResumeCell}>
+                <td className={Styles.TailorCell}>
                   <button
-                    className={Styles.ResumeButton}
-                    onClick={() => Props.TailorResume(Row.fingerprint)}
-                    disabled={Props.TailorPending}
+                    className={Styles.TailorButton}
+                    title="Tailor your resume for this vacancy"
+                    onClick={() => Props.Tailor(Row.fingerprint)}
                   >
-                    {Props.TailorPending ? "…" : "Tailor"}
+                    Tailor
                   </button>
-                  {Props.TailoredFor === Row.fingerprint && (
-                    <button
-                      className={Styles.ResumeButton}
-                      onClick={() => Props.DownloadResumePdf(Row.fingerprint)}
-                    >
-                      PDF
-                    </button>
-                  )}
                 </td>
                 <td className={Styles.DismissCell}>
                   <button
@@ -108,13 +108,6 @@ export function ResultsTemplate(Props: ResultsState) {
           </tbody>
         </table>
       </div>
-      {Props.ResumePreviewUrl !== "" && (
-        <img
-          className={Styles.ResumePreview}
-          src={Props.ResumePreviewUrl}
-          alt="Tailored resume preview"
-        />
-      )}
     </div>
   )
 }
