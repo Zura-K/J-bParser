@@ -1,122 +1,109 @@
-.Bar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
+.Wizard {
+  padding-bottom: 96px;
 }
 
-.Title {
+.Stepper {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.StepButton,
+.StepButtonActive {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  border-top: 3px solid var(--Border);
+  padding: 12px 2px 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+
+.StepButtonActive {
+  border-top-color: var(--Accent);
+}
+
+.StepNum,
+.StepNumDone,
+.StepNumCurrent {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "JetBrains Mono", monospace;
+  background: var(--Surface2);
+  color: var(--Muted);
+}
+
+.StepNumDone {
+  background: var(--AccentSoft);
+  color: var(--Accent);
+}
+
+.StepNumCurrent {
+  background: var(--Accent);
+  color: var(--AccentInk);
+}
+
+.StepText {
+  min-width: 0;
+}
+
+.StepLabel,
+.StepLabelCurrent {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--Muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.StepLabelCurrent {
+  color: var(--Text);
+}
+
+.StepHint {
+  display: block;
+  font-size: 12px;
+  color: var(--Muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Intro {
+  margin-bottom: 20px;
+}
+
+.Heading {
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-.Status {
+.Sub {
+  margin: 4px 0 0;
   color: var(--Muted);
-  font-size: 13px;
-}
-
-.SaveButton {
-  background: var(--Accent);
-  border: none;
-  border-radius: 8px;
-  color: var(--AccentInk);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 7px 14px;
-  cursor: pointer;
-}
-
-.SaveButton:hover:enabled {
-  filter: brightness(1.08);
-}
-
-.SaveButton:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
-.Picker {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--Muted);
-  font-size: 13px;
-}
-
-.Select {
-  background: var(--Surface);
-  color: var(--Text);
-  border: 1px solid var(--Border);
-  border-radius: 8px;
   font-size: 13.5px;
-  padding: 7px 10px;
-  cursor: pointer;
-  max-width: 320px;
-}
-
-.Grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
-  gap: 24px;
-  align-items: start;
-}
-
-.Editor {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-}
-
-.Side {
-  position: sticky;
-  top: 76px;
-  min-width: 0;
-}
-
-.Stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.Card,
-.Panel {
-  background: var(--Surface);
-  border: 1px solid var(--Border);
-  border-radius: 12px;
-  box-shadow: var(--Shadow);
-  padding: 18px 20px;
-}
-
-.Panel {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.PanelTight {
-  background: var(--Surface);
-  border: 1px solid var(--Border);
-  border-radius: 12px;
-  box-shadow: var(--Shadow);
-  overflow: hidden;
-}
-
-.CardHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
 }
 
 .SectionLabel {
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -124,21 +111,135 @@
   color: var(--Muted);
 }
 
-.CardHead .SectionLabel {
-  margin-bottom: 0;
+.Hint {
+  margin: 8px 0 0;
+  color: var(--Muted);
+  font-size: 12px;
 }
 
-.Mono {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11.5px;
+.WidgetGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 14px;
+}
+
+.WidgetCard {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+}
+
+.WidgetCardOpen {
+  border-color: var(--Accent);
+}
+
+.WidgetCardWide {
+  grid-column: 1 / -1;
+}
+
+.WidgetCardOff {
+  opacity: 0.55;
+}
+
+.WidgetHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.Switch,
+.SwitchOn {
+  flex: none;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  background: var(--Border);
+  padding: 0;
+}
+
+.SwitchOn {
+  background: var(--Accent);
+}
+
+.SwitchKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.15s;
+}
+
+.SwitchOn .SwitchKnob {
+  left: 18px;
+}
+
+.WidgetInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.WidgetLabel {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+
+.WidgetMeta {
   color: var(--Muted);
+  font-size: 12.5px;
+}
+
+.EditButton,
+.EditButtonActive {
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Text);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.EditButton:hover,
+.EditButtonActive:hover {
+  border-color: var(--Muted);
+}
+
+.EditButtonActive {
+  background: var(--AccentSoft);
+  color: var(--Accent);
+}
+
+.WidgetBody {
+  border-top: 1px solid var(--Border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.IdentityGrid {
+  border-top: 1px solid var(--Border);
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
 }
 
 .Input,
 .InputStrong,
-.InputMono,
 .TextArea,
-.BulletText {
+.BulletsArea,
+.TagDraft {
   min-width: 0;
   box-sizing: border-box;
   background: var(--Bg);
@@ -146,394 +247,245 @@
   border: 1px solid var(--Border);
   border-radius: 8px;
   padding: 8px 10px;
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 .InputStrong {
   font-weight: 600;
 }
 
-.InputMono {
-  color: var(--Muted);
-  font-size: 12.5px;
-  font-family: "JetBrains Mono", monospace;
-}
-
 .TextArea {
   width: 100%;
   padding: 10px 12px;
+  font-size: 13.5px;
   line-height: 1.5;
 }
 
-.BulletText {
-  font-size: 13px;
+.BulletsArea {
+  width: 100%;
   line-height: 1.45;
 }
 
 .Input:focus,
 .InputStrong:focus,
-.InputMono:focus,
 .TextArea:focus,
-.BulletText:focus,
-.TagDraft:focus,
-.TagDraftCompact:focus {
+.BulletsArea:focus,
+.TagDraft:focus {
   outline: none;
   border-color: var(--Accent);
   border-style: solid;
 }
 
-.IdentityGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.IdentityGrid > :first-child {
-  grid-column: 1 / -1;
-}
-
-.Roles {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.Role {
-  border-top: 1px solid var(--Border);
-  padding-top: 14px;
-}
-
-.RoleGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.Bullets {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.BulletRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 150px 28px;
-  gap: 8px;
-  align-items: start;
-}
-
-.BulletTags {
+.Tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  align-content: flex-start;
+  gap: 6px;
 }
 
 .Tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: var(--AccentSoft);
-  color: var(--Accent);
-  border-radius: 6px;
-  padding: 2px 7px;
-  font-size: 11.5px;
+  gap: 6px;
+  background: var(--Surface2);
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12.5px;
   font-weight: 500;
-  font-family: "JetBrains Mono", monospace;
 }
 
 .TagRemove {
   background: none;
   border: none;
-  color: inherit;
+  color: var(--Muted);
   cursor: pointer;
   padding: 0;
   font-size: 11px;
   line-height: 1;
-  opacity: 0.7;
 }
 
 .TagRemove:hover {
-  opacity: 1;
   color: var(--Bad);
-}
-
-.TagDraft,
-.TagDraftCompact {
-  min-width: 0;
-  background: var(--Bg);
-  color: var(--Text);
-  border: 1px dashed var(--Border);
-  border-radius: 8px;
-  padding: 5px 10px;
-  font-size: 12.5px;
 }
 
 .TagDraft {
   flex: 1;
-  min-width: 160px;
-}
-
-.TagDraftCompact {
-  width: 64px;
-  background: none;
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 11.5px;
-  font-family: "JetBrains Mono", monospace;
-}
-
-.IconButton {
-  background: none;
-  border: none;
-  border-radius: 6px;
-  color: var(--Muted);
-  cursor: pointer;
-  font-size: 13px;
-  padding: 6px 4px;
-  line-height: 1;
-}
-
-.IconButton:hover {
-  color: var(--Bad);
-  background: var(--Surface2);
-}
-
-.RoleFoot {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.LinkButton,
-.LinkButtonMuted {
-  background: none;
-  border: none;
-  font-size: 12.5px;
-  font-weight: 500;
-  padding: 2px 0;
-  cursor: pointer;
-}
-
-.LinkButton {
-  color: var(--Accent);
-}
-
-.LinkButtonMuted {
-  color: var(--Muted);
-}
-
-.LinkButton:hover {
-  text-decoration: underline;
-}
-
-.LinkButtonMuted:hover {
-  color: var(--Bad);
-}
-
-.SmallButton {
-  background: none;
-  border: 1px solid var(--Border);
-  border-radius: 8px;
-  color: var(--Text);
-  font-size: 12.5px;
-  font-weight: 500;
-  padding: 5px 10px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.SmallButton:hover {
-  border-color: var(--Muted);
-}
-
-.SkillTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.SkillTag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--Surface2);
-  border: 1px solid var(--Border);
-  border-radius: 8px;
+  min-width: 150px;
+  border-style: dashed;
   padding: 5px 10px;
   font-size: 12.5px;
-  font-weight: 500;
 }
 
-.EducationRows {
+.EntryList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.EducationGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 72px 28px;
-  gap: 8px;
-  align-items: center;
-}
-
-.EmptyPanel {
-  background: var(--Surface);
-  border: 1px dashed var(--Border);
-  border-radius: 12px;
-  padding: 56px 32px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.EmptyGlyph {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--AccentSoft);
-  color: var(--Accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-}
-
-.EmptyTitle {
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.EmptyBody {
-  margin: 0;
-  color: var(--Muted);
-  font-size: 13.5px;
-  max-width: 360px;
-  text-wrap: pretty;
-}
-
-.PrimaryButton {
-  margin-top: 8px;
-  background: var(--Accent);
-  border: none;
-  border-radius: 8px;
-  color: var(--AccentInk);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.PrimaryButton:hover:enabled {
-  filter: brightness(1.08);
-}
-
-.PrimaryButton:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-.SecondaryButton {
-  margin-top: 8px;
-  background: none;
-  border: 1px solid var(--Border);
-  border-radius: 8px;
-  color: var(--Text);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 8px 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.SecondaryButton:hover {
-  border-color: var(--Muted);
-}
-
-.Actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.Actions .PrimaryButton,
-.Actions .SecondaryButton {
-  margin-top: 0;
-}
-
-.LoadingHead {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.Spinner {
-  width: 52px;
-  height: 52px;
-  flex: none;
-  border-radius: 50%;
-  border: 4px solid var(--Border);
-  border-top-color: var(--Accent);
-  animation: Spin 1s linear infinite;
-}
-
-.LoadingTitle {
-  font-weight: 600;
-}
-
-.LoadingSub {
-  color: var(--Muted);
-  font-size: 13px;
-}
-
-.ShimmerLine {
-  height: 12px;
-  border-radius: 6px;
-  background: var(--Surface2);
-  animation: Shimmer 1.2s ease-in-out infinite;
-}
-
-.ShimmerPage {
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: 210 / 297;
-  max-height: 360px;
-  border-radius: 8px;
-  background: var(--Surface2);
-  animation: Shimmer 1.2s ease-in-out infinite;
-}
-
-.CoverageHead {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.CoverageMain {
-  display: flex;
-  align-items: center;
   gap: 14px;
+}
+
+.EntryRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--Border);
+  padding-top: 12px;
+}
+
+.EntryCells {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.RemoveLink {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: var(--Muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.RemoveLink:hover {
+  color: var(--Bad);
+}
+
+.AddButton {
+  align-self: flex-start;
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Text);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.AddButton:hover {
+  border-color: var(--Muted);
+}
+
+.CoverageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.VacancyList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.VacancyCard,
+.VacancyCardSelected {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.VacancyCard:hover {
+  border-color: var(--Muted);
+}
+
+.VacancyCardSelected {
+  border-color: var(--Accent);
+}
+
+.Radio,
+.RadioOn {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--Border);
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.RadioOn {
+  border-color: var(--Accent);
+  background: var(--Accent);
+}
+
+.VacancyText {
   flex: 1;
-  min-width: 240px;
+  min-width: 0;
+}
+
+.VacancyTitle {
+  display: block;
+  font-weight: 600;
+}
+
+.VacancySub {
+  display: block;
+  color: var(--Muted);
+  font-size: 12.5px;
+}
+
+.Pct {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.PctGood {
+  color: var(--Good);
+  background: var(--GoodSoft);
+}
+
+.PctWarn {
+  color: var(--Warn);
+  background: var(--WarnSoft);
+}
+
+.PctBad {
+  color: var(--Bad);
+  background: var(--BadSoft);
+}
+
+.CoveragePanel {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.RingRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .Ring {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
   flex: none;
   border-radius: 50%;
 }
 
 .RingInner {
   position: absolute;
-  inset: 6px;
+  inset: 8px;
   border-radius: 50%;
   background: var(--Surface);
   display: flex;
@@ -541,34 +493,24 @@
   justify-content: center;
   font-family: "JetBrains Mono", monospace;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 20px;
 }
 
-.CoverageText {
-  min-width: 0;
-}
-
-.CoverageText .SectionLabel {
-  margin-bottom: 0;
-}
-
-.CoverageVacancy {
+.CoverageTitle {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.3;
-  overflow-wrap: anywhere;
 }
 
 .CoverageSub {
   color: var(--Muted);
-  font-size: 12.5px;
+  font-size: 13px;
 }
 
-.SkillColumns {
+.SkillCols {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
-  margin-top: 2px;
 }
 
 .SkillHeading {
@@ -603,7 +545,9 @@
   gap: 5px;
 }
 
-.Chip {
+.ChipGood {
+  background: var(--GoodSoft);
+  color: var(--Good);
   border-radius: 6px;
   padding: 3px 8px;
   font-size: 12px;
@@ -611,35 +555,308 @@
   font-family: "JetBrains Mono", monospace;
 }
 
-.ChipGood {
-  background: var(--GoodSoft);
-  color: var(--Good);
-}
-
-.ChipBad {
+.MissingButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--BadSoft);
   color: var(--Bad);
+  border: none;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: "JetBrains Mono", monospace;
+  cursor: pointer;
 }
 
-.ErrorText {
+.MissingButton:hover {
+  filter: brightness(1.15);
+}
+
+.MissingPlus {
+  opacity: 0.75;
+}
+
+.Options {
+  border-top: 1px solid var(--Border);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.Checkbox {
+  accent-color: var(--Accent);
+  width: 16px;
+  height: 16px;
   margin: 0;
-  color: var(--Bad);
-  font-size: 13px;
 }
 
-.ViewBar {
+.OptionTitle {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.OptionSub {
+  display: block;
+  color: var(--Muted);
+  font-size: 12.5px;
+}
+
+.Placeholder {
+  border: 1px dashed var(--Border);
+  border-radius: 12px;
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--Muted);
+  font-size: 13.5px;
+}
+
+.DesignGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.DesignLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.Presets {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.PresetButton,
+.PresetButtonActive {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.PresetButton:hover {
+  border-color: var(--Muted);
+}
+
+.PresetButtonActive {
+  border-color: var(--Accent);
+}
+
+.PresetLabel,
+.PresetLabelActive {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--Text);
+}
+
+.PresetLabelActive {
+  color: var(--Accent);
+}
+
+.Thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 6%;
+  aspect-ratio: 1 / 1.3;
+  background: #fff;
+  border-radius: 4px;
+  padding: 10%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.ThumbTitle {
+  display: block;
+  height: 8%;
+  width: 55%;
+  border-radius: 1px;
+}
+
+.ThumbLine,
+.ThumbLineShort {
+  display: block;
+  height: 4%;
+  background: #e2e8f0;
+}
+
+.ThumbLineShort {
+  width: 70%;
+}
+
+.Thumb > .ThumbLine {
+  width: 80%;
+  background: #cbd5e1;
+}
+
+.ThumbBody {
+  display: flex;
+  gap: 8%;
+  flex: 1;
+}
+
+.ThumbMain,
+.ThumbSide {
+  display: flex;
+  flex-direction: column;
+  gap: 6%;
+}
+
+.ThumbSide {
+  flex: 1;
+}
+
+.ThumbHead {
+  display: block;
+  height: 5%;
+  width: 40%;
+}
+
+.ThumbHeadGap {
+  margin-top: 8%;
+}
+
+.Assembler {
+  background: var(--Surface);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  box-shadow: var(--Shadow);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.AssemblerHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.AssemblerHead .Hint {
+  margin: 0;
+}
+
+.Sections {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.SectionRow,
+.SectionRowOff {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--Border);
+  background: var(--Bg);
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  padding: 6px 8px 6px 12px;
+}
+
+.SectionRowOff {
+  opacity: 0.45;
+}
+
+.SectionNum {
+  color: var(--Muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  width: 14px;
+}
+
+.SectionName {
+  flex: 1;
+  font-weight: 500;
+  font-size: 13.5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ColButton {
+  background: var(--Surface2);
+  border: none;
+  border-radius: 6px;
+  color: var(--Muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.ColButton:hover {
+  color: var(--Text);
+}
+
+.ArrowButton,
+.EyeButton,
+.EyeButtonOn {
+  background: none;
+  border: none;
+  color: var(--Muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+
+.ArrowButton:hover,
+.EyeButton:hover {
+  color: var(--Text);
+}
+
+.EyeButtonOn {
+  color: var(--Accent);
+}
+
+.Knobs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px 24px;
+}
+
+.KnobLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--Muted);
+  margin-bottom: 8px;
 }
 
 .Segment {
   display: inline-flex;
-  background: var(--Surface2);
+  background: var(--Bg);
+  border: 1px solid var(--Border);
   border-radius: 8px;
   padding: 3px;
+  gap: 2px;
+  max-width: 100%;
+  flex-wrap: wrap;
 }
 
 .SegmentButton,
@@ -652,6 +869,10 @@
   font-weight: 600;
   padding: 5px 12px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 .SegmentActive {
@@ -660,115 +881,216 @@
   box-shadow: var(--Shadow);
 }
 
-.ViewMeta {
-  margin-left: auto;
-  color: var(--Muted);
-  font-size: 12px;
-  font-family: "JetBrains Mono", monospace;
+.Swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-.PreviewWrap {
-  padding: 20px;
-  background: var(--Surface2);
+.PageWrap {
+  min-width: 0;
   display: flex;
   justify-content: center;
+  background: var(--Surface2);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  padding: 20px;
 }
 
-.PreviewPage {
-  width: 100%;
-  max-width: 420px;
-  display: block;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-}
-
-.DiffScroll {
-  overflow-x: auto;
-}
-
-.DiffTable {
-  min-width: 560px;
-}
-
-.DiffHeader,
-.DiffRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--Border);
-}
-
-.DiffHeaderLeft,
-.DiffHeaderRight {
-  padding: 8px 14px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.DiffHeaderLeft {
-  color: var(--Muted);
-  border-right: 1px solid var(--Border);
-}
-
-.DiffHeaderRight {
-  color: var(--Accent);
-}
-
-.DiffRow {
-  font-size: 12.5px;
-  line-height: 1.5;
-}
-
-.DiffCell,
-.DiffLeftChanged,
-.DiffRightChanged {
-  padding: 8px 14px;
+.PdfHead {
   display: flex;
-  gap: 10px;
-  color: var(--Muted);
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.DiffCell:first-child,
-.DiffLeftChanged {
-  border-right: 1px solid var(--Border);
+.PdfActions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-.DiffLeftChanged {
-  background: var(--BadSoft);
-  color: var(--Text);
+.AtsGood,
+.AtsWarn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
 }
 
-.DiffRightChanged {
+.AtsGood {
+  color: var(--Good);
   background: var(--GoodSoft);
+}
+
+.AtsWarn {
+  color: var(--Warn);
+  background: var(--WarnSoft);
+}
+
+.SecondaryButton {
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 8px;
   color: var(--Text);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-.DiffMark {
-  flex: none;
-  width: 14px;
-  font-family: "JetBrains Mono", monospace;
+.SecondaryButton:hover:enabled {
+  border-color: var(--Muted);
+}
+
+.PrimaryButton {
+  background: var(--Accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--AccentInk);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.PrimaryButton:hover:enabled {
+  filter: brightness(1.08);
+}
+
+.PrimaryButton:disabled,
+.SecondaryButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ErrorText {
+  margin: 0 0 16px;
+  color: var(--Bad);
+  font-size: 13px;
+}
+
+.PdfWrap {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  background: var(--Surface2);
+  border: 1px solid var(--Border);
+  border-radius: 12px;
+  padding: 32px;
+}
+
+.PreviewImage {
+  width: 100%;
+  max-width: 760px;
+  display: block;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+}
+
+.PdfPending {
+  width: 100%;
+  max-width: 760px;
+  aspect-ratio: 210 / 297;
+  max-height: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: 8px;
+  background: var(--Surface);
+}
+
+.PdfPendingText {
   color: var(--Muted);
+  font-size: 13px;
 }
 
-.Struck {
-  text-decoration: line-through;
-  text-decoration-color: var(--Bad);
+.Spinner {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 4px solid var(--Border);
+  border-top-color: var(--Accent);
+  animation: Spin 1s linear infinite;
+}
+
+.Footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: var(--Surface);
+  border-top: 1px solid var(--Border);
+}
+
+.FooterInner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.BackButton {
+  background: none;
+  border: 1px solid var(--Border);
+  border-radius: 8px;
+  color: var(--Text);
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 9px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.BackButton:hover:enabled {
+  border-color: var(--Muted);
+}
+
+.BackButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.FootNote {
+  color: var(--Muted);
+  font-size: 13px;
+  margin-left: 4px;
+}
+
+.NextButton {
+  margin-left: auto;
+  background: var(--Accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--AccentInk);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 9px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.NextButton:hover {
+  filter: brightness(1.08);
 }
 
 @keyframes Spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes Shimmer {
-  0% {
-    opacity: 0.45;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.45;
   }
 }
