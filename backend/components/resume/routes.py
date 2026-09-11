@@ -7,6 +7,7 @@ from components.resume import generate
 from library import store
 
 router = APIRouter()
+generic_vacancy_id = "generic"
 
 
 class BulletPayload(BaseModel):
@@ -19,7 +20,8 @@ class ExperiencePayload(BaseModel):
     role: str = ""
     start: str = ""
     end: str = ""
-    bullets: list[BulletPayload] = []
+    dates: str = ""
+    bullets: list[str | BulletPayload] = []
 
 
 class MasterProfilePayload(BaseModel):
@@ -30,6 +32,16 @@ class MasterProfilePayload(BaseModel):
     experience: list[ExperiencePayload] = []
     skills: list[str] = []
     education: list[dict] = []
+    languages: list[dict] = []
+    certifications: list[dict] = []
+    projects: list[dict] = []
+    widgets: list[dict] = []
+    template: dict = {}
+
+
+class TailorOptions(BaseModel):
+    rewrite_summary: bool = True
+    reorder_skills: bool = True
 
 
 @router.get("/api/resume/profile")
@@ -51,23 +63,32 @@ def put_master_profile(
 @router.post("/api/resume/{vacancy_id}")
 def build_resume(
     vacancy_id: str,
+    options: TailorOptions | None = None,
     template: str = "default",
     user_id: str = Depends(resolve_user_id),
 ) -> dict:
+    options = options or TailorOptions()
     profile = store.load_master_profile(user_id)
     if profile is None:
         raise HTTPException(status_code=404, detail="no master profile")
-    vacancy = store.load_listing(vacancy_id)
-    if vacancy is None:
-        raise HTTPException(status_code=404, detail="no such vacancy")
-    tailored, coverage = generate.select_content(profile, vacancy)
-    tailored = generate.rewrite_summary(tailored, vacancy)
+    if vacancy_id == generic_vacancy_id:
+        tailored, coverage = profile, None
+    else:
+        vacancy = store.load_listing(vacancy_id)
+        if vacancy is None:
+            raise HTTPException(status_code=404, detail="no such vacancy")
+        tailored, coverage = generate.select_content(
+            profile, vacancy, reorder_skills=options.reorder_skills
+        )
+        if options.rewrite_summary:
+            tailored = generate.rewrite_summary(tailored, vacancy)
     try:
         pdf_blob = generate.render_pdf(tailored, template)
     except TemplateNotFound:
         raise HTTPException(status_code=404, detail="no such template")
     store.save_resume(user_id, vacancy_id, tailored)
     store.save_resume_pdf(user_id, vacancy_id, pdf_blob)
+    store.save_resume_png(user_id, vacancy_id, generate.pdf_first_page_png(pdf_blob))
     return {"coverage": coverage, "resume": tailored}
 
 

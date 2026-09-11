@@ -141,6 +141,7 @@ export type SearchResult = {
   snippet: string
   score: number
   reason: string
+  skills: string[]
 }
 
 export type SourceRow = {
@@ -163,23 +164,59 @@ export type MeResponse = {
   max_profiles: number
 }
 
-export type ResumeBullet = {
-  text: string
-  skills: string[]
+export type WidgetId =
+  | "summary"
+  | "experience"
+  | "skills"
+  | "education"
+  | "languages"
+  | "certifications"
+  | "projects"
+
+export type ResumeWidget = {
+  id: WidgetId
+  on: boolean
+  side: boolean
 }
 
 export type ResumeExperience = {
-  company: string
   role: string
-  start: string
-  end: string
-  bullets: ResumeBullet[]
+  company: string
+  dates: string
+  bullets: string[]
 }
 
 export type ResumeEducation = {
   institution: string
   degree: string
   year: string
+}
+
+export type ResumeLanguage = {
+  language: string
+  level: string
+}
+
+export type ResumeCertification = {
+  name: string
+  year: string
+}
+
+export type ResumeProject = {
+  name: string
+  summary: string
+  year: string
+  bullets: string[]
+}
+
+export type TemplateSettings = {
+  preset: string
+  columns: 1 | 2
+  font: "sans" | "serif"
+  accent: string
+  density: "compact" | "normal" | "airy"
+  header_align: "left" | "center"
+  title_style: "underline" | "caps" | "bar"
 }
 
 export type MasterProfile = {
@@ -190,6 +227,11 @@ export type MasterProfile = {
   experience: ResumeExperience[]
   skills: string[]
   education: ResumeEducation[]
+  languages: ResumeLanguage[]
+  certifications: ResumeCertification[]
+  projects: ResumeProject[]
+  widgets: ResumeWidget[]
+  template: TemplateSettings
 }
 
 export type ResumeCoverage = {
@@ -199,8 +241,13 @@ export type ResumeCoverage = {
 }
 
 export type TailoredResume = {
-  coverage: ResumeCoverage
+  coverage: ResumeCoverage | null
   resume: MasterProfile
+}
+
+export type TailorOptions = {
+  rewrite_summary: boolean
+  reorder_skills: boolean
 }
 
 export function FetchMasterProfile(): Promise<{ profile: MasterProfile }> {
@@ -211,8 +258,8 @@ export function SaveMasterProfile(Profile: MasterProfile): Promise<{ ok: boolean
   return ApiFetch<{ ok: boolean }>("/api/resume/profile", "PUT", Profile)
 }
 
-export function TailorResume(VacancyId: string): Promise<TailoredResume> {
-  return ApiFetch<TailoredResume>(`/api/resume/${VacancyId}`, "POST")
+export function TailorResume(VacancyId: string, Options: TailorOptions): Promise<TailoredResume> {
+  return ApiFetch<TailoredResume>(`/api/resume/${VacancyId}`, "POST", Options)
 }
 
 export function FetchResumePdf(VacancyId: string): Promise<Blob> {

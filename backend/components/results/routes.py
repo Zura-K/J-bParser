@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from components.auth.identity import quotas_for_user, resolve_user_id
 from library import ranking, store
 from components.results import reasons
+from components.sources import extract
 
 router = APIRouter()
 
@@ -73,6 +74,9 @@ def search(profile_id: str, user_id: str = Depends(resolve_user_id)) -> dict:
                 "snippet": item.get("body", "")[:300],
                 "score": round(item["score"], 4),
                 "reason": reason_map.get(item["fingerprint"], ""),
+                "skills": extract.extract_skills(
+                    item.get("title", "") + "\n" + item.get("body", "")
+                ),
             }
             for item in scored
         ]
